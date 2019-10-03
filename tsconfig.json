@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "sourceMap": true,
+        "lib": ["dom", "es2017"],
+        "emitBOM": true,
+        "charset": "utf8"
+    }
+}
