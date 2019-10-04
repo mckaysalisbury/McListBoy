@@ -1,0 +1,341 @@
+<html>
+    <head>
+        <title>
+            mIqey tlhIngan Hol nompuq
+        </title>
+        <script src="ListBoy.js"></script>
+        <style>
+            h1 {
+                text-align: center;
+            }
+            .tlhIngan {
+                font-weight: bolder;
+            }
+            .english {
+                font-style: italic;
+            }
+            .descriptive {
+                /* at one point, I needed to reset, because I was nesting tags,
+                but I don't think I do anymore */
+                /* font-weight: normal;
+                font-style: normal; */
+            }
+            div {
+                margin: 3px;
+                text-align: center;
+            }
+            .container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                text-align: center;
+                flex-direction: column;
+
+                /* border: 1px solid orange; */
+            }
+            .item {
+                border: 1px solid orange;
+            }
+            .itemHeader {
+                text-decoration: underline;
+            }
+            .horizontal {
+                flex-direction: row;
+            }
+            dt {
+                text-align: center;
+            }
+
+            /* For POV tables */
+            table {
+                border-collapse: collapse;
+                margin:auto;
+            }
+            td {
+                border: 1px solid black;
+                padding: 3px;
+                text-align: center;
+            }
+            tr:first-child td {
+                border-top: 0;
+            }
+            tr td:first-child {
+                border-left: 0;
+            }
+            tr:last-child td {
+                border-bottom: 0;
+            }
+            tr td:last-child {
+                border-right: 0;
+            }
+        </style>
+    </head>
+    <script>
+
+
+        makeHorizontal = function(target) {
+            target.classList.add("horizontal");
+        };
+
+        clearClasses = function(target) {
+            // target.className = '';
+        }
+
+        language = function(item, cssClass) {
+            var node = document.createElement("span")
+            node.classList.add(cssClass);
+            node.appendChild(document.createTextNode(item));
+            return node;
+        }
+
+        descriptive = function(target) {
+            return language(target, "descriptive");
+        };
+        english = function(target) {
+            return language(target, "english");
+        };
+        tlhingan = function(target) {
+            return language(target, "tlhIngan");
+        };
+
+
+        var data = {
+            action: makeHorizontal,
+            // Adverbs: { },
+            Verbs: {
+                action: makeHorizontal,
+                Prefix: {
+                    "no object declarative": new POV(
+                        "jI-", "bI-", descriptive("none"), "ma-", "Su-", descriptive("none")),
+                    "no object imperative": new POV("", "yI-", "", "", "pe-", ""),
+                    "object declarative": new POV(
+                        new POV("", "qa-", "vI-", "", "Sa-", "vI-"),
+                        new POV("cho-", "", "Da-", "ju-", "", "Da-"),
+                        new POV("mu-", "Du-", descriptive("none"), "nu-", "lI-", descriptive("none")),
+                        new POV("", "pI-", "wI-", "", "re-", "DI-"),
+                        new POV("tu-", "", "bo-", "che-", "", "bo-"),
+                        new POV("mu-", "nI-", "lu-", "nu-", "lI-", descriptive("none"))),
+                    "object imperative": new POV(
+                        "",
+                        new POV("HI-", "", "yI-", "gho-", "", "tI-"),
+                        "",
+                        "",
+                        new POV("HI-", "", "yI-", "gho-", "", "tI-"),
+                        "")
+                },
+                // Verbs: { },
+                Suffix: {
+                    "1: Oneself/one another": {
+                        "`reflexive (e.g. *themselves*)": "-'egh",
+                        "`reciprocal (e.g. *each other*)": "-chuq",
+                    },
+                    "2: Volition/predisposition": {
+                        need : "-nIS",
+                        "<subj> is willing to": "-qang",
+                        "<subj> is afraid to": "-vIp",
+                        "`[inanimate] *ready / prepared*": "-beH",
+                        "`[w/feelings] *ready / set up*": "-rup",
+
+                    },
+                    "3: Change": {
+                        "`state / direction *become / begin to*": "-choH",
+                        resume: "-qa'",
+                    },
+                    "4: Cause": {
+                        "`*cause* (imperative)": "-moH",
+                    },
+                    "5: Indefenite subject/ability": {
+                        can: "-laH",
+                        "`indefinite subject (passive voice / *there is*)": "-lu'",
+                    },
+                    "6: Qualification": {
+                        "clearly / perfectly": "-chu'",
+                        "certainly / undoubtedly": "-bej",
+                        "`*seemingly / apparently* (uncertainty)": "-law'",
+                        obviously: "-ba'",
+                    },
+                    "7: Aspect": {
+                        "continuous": {
+                            "in general": "-taH",
+                            "towards a goal": "-lI'",
+                        },
+                        "`(perfect) *have*": {
+                            normal: "-pu'",
+                            deliberately: "-ta'",
+                        },
+                    },
+                    "8: Honorific": {
+                        "honorific": "-neS",
+                    },
+                    "9: Syntactic markers": {
+                        "one who does": "-wI'",
+                        "which / who / that does": "-bogh",
+                        "interrogative": "-'a'",
+                        "if": "-chugh",
+                        "as soon as": "-DI'",
+                        "before": "-pa'",
+                        "while": "-viS",
+                        "for": "-meH",
+                        "due to": "-mo'",
+                        "may / let": "-jaj",
+                        "`*-ness / -tion* (nominalizer)": "-ghach",
+                    },
+                    "Rovers": {
+                        very: "-qu'",
+                        "`*not*": {
+                            "`[declarative]": "-be'",
+                            "`[imperative / refusal]": "-Qo'",
+                        },
+                        "`*undo (dis-, mis-, de-)* (position 1)": "-Ha'",
+                    },
+                },
+            },
+            Nouns: {
+                // Prefix: { },
+                Suffix: {
+                    "1: Augmentative / Diminutive": {
+                        augmentative: "-'a'",
+                        diminutive: "-Hom",
+                        endearment: "-oy",
+                    },
+                    "2: Quantity": {
+                        plural: {
+                            "`[💬]": "-pu'",
+                            "`[body part]": "-Du'",
+                            "`[else]": "-mey",
+                        },
+                    },
+                    "3: Qualification": {
+                        "so-called": "-qoq",
+                        apparent: "-Hey",
+                        definite: "-na'",
+                    },
+                    "4: Possessive/Specification": {
+                        possessive: new POV({
+                                "`[💬]": "-wI'",
+                                "`[else]": "-wIj",
+                            }, {
+                                "`[💬]": "-lI'",
+                                "`[else]": "-lIj",
+                            }, "-Daj", {
+                                "`[💬]": "-ma'",
+                                "`[else]": "-maj",
+                            }, {
+                                "`[💬]": "-ra'",
+                                "`[else]": "-raj",
+                            }, "-chaj"),
+                        "this/these": "-vam",
+                        "that/those": "-vetlh",
+                    },
+                    "5: Syntactic": {
+                        "`*at / in / on / by / to* (locative)": "-Daq",
+                        from: "-vo'",
+                        "due to, because of": "-mo'",
+                        for: "-vaD",
+                        "topic / emphasis": "-'e'",
+                    },
+                },
+            },
+            "`**chuvmey**": {
+                Pronouns: {
+                    subject: new POV(
+                        "jIH", "SoH", {
+                            "`[💬]": "ghaH",
+                            "`[else]": "'oH",
+                        },
+                        "maH", "tlhIH", {
+                            "`[💬]": "chaH",
+                            "`[else]": "bIH",
+                        }
+                    ),
+                    "to be (subject needs)": "-'e'",
+                },
+                "`**mI'**": {
+                        0: "pagh",
+                        1: "wa'",
+                        2: "cha'",
+                        3: "wej",
+                        4: "loS",
+                        5: "vagh",
+                        6: "jav",
+                        7: "Soch",
+                        8: "chorgh'",
+                        9: "Hut",
+                        10: "-maH",
+                        100: "-vatlh",
+                        "1K": "-SaD / -SanID",
+                        "10K": "-netlh",
+                        "100K": "-bIp",
+                        "1M": "-'uy'",
+                        "`*<sup>th</sup>* (ordinal)": "-DIch",
+                        "`*-ce / times* (repetion)": "-logh",
+                },
+                "Question words": {
+                    Pronouns: {
+                        "`[💬] *who / whom*": "'Iv",
+                        "`[else] *what*": "nuq",
+                    },
+                    Adverbs: {
+                        where: "nuqDaq",
+                        when: "ghorgh",
+                        why: "qatlh",
+                        how: "chay'",
+                    },
+                    right: "qar'a'",
+                },
+            },
+            "`**qaghwI'**": {
+                Verbs: {
+                    "is good looking": "'IH",
+                    "is disgusting": "'up",
+                    "is thirsty": "'oj",
+                    "is heavy": "'ugh",
+                    "is delicious": "'ey",
+                },
+                Pronouns: {
+                    "`*it / [it] is* (3rd-person sing no💬)": "'oH",
+                },
+                Nouns: {
+                    "area behind": "'em",
+                    "some": "'op",
+                    "blood": "'Iw",
+                    "guard": "'av",
+                },
+                Conjunctions: {
+                    and: "'ej",
+                    but: "'ach",
+                },
+                Questions: {
+                    "how many / much?": "'ar",
+                    "`[💬] *who / whom*": "'Iv",
+                },
+            },
+        }
+
+        ListBoy.RenderTo(data, "main");
+
+        var povLegend = new POV(
+            "first person singular (e.g. I / me)",
+            "second person singular (e.g. you)",
+            "third person singular (e.g. he, hers, it)",
+            "first person plural (e.g. we)",
+            "second person plural (e.g. y'all)",
+            "third person plural (e.g. they, these)")
+        ListBoy.RenderTo(povLegend, "pov");
+    </script>
+
+    <body>
+        <h1>mIqey tlhIngan Hol nompuq</h1>
+        <div id="main"></div>
+        Key
+        <ul>
+            <li><span class="tlhingan">tlhingan</span></li>
+            <li><span class="english">English</span></li>
+            <li><span class="descriptive">descriptive</span></li>
+            <li><span class="descriptive">[condition]</span></li>
+            <li><span class="english">[optional]</span></li>
+            <li>💬: Being capable of language</li>
+            <li><div id="pov"></div></li>
+        </ul>
+    </body>
+</html>
