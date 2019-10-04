@@ -62,12 +62,14 @@ var ListBoy = /** @class */ (function () {
         else if (item.constructor == Object) { // JSON
             return ListBoy.CreateData(item);
         }
+        else if (typeof (item) == "number") {
+            return document.createTextNode(item.toString());
+        }
         else if (typeof (item) == "string") {
             return ListBoy.CreateText(item, "tlhingan");
         }
         else if (Array.isArray(item)) {
-            alert("I haven't written support for arrays yet.");
-            return this.CreateText("An Array will go here");
+            return ListBoy.CreateArray(item);
         }
         else if (typeof (item) === "object") {
             if (item.tagName === "SPAN") {
@@ -88,8 +90,6 @@ var ListBoy = /** @class */ (function () {
      */
     ListBoy.CreateText = function (item, defaultClass) {
         if (defaultClass === void 0) { defaultClass = null; }
-        // alert("CreateText");
-        // return document.createTextNode("hello");
         if (item[0] === "`") { // This is the indicator for markdown mode
             var pieces = item.substring(1).split("*");
             var language = "descriptive"; // presume no formatting
@@ -138,6 +138,20 @@ var ListBoy = /** @class */ (function () {
                 return document.createTextNode(item);
             }
         }
+    };
+    /**
+     * Creates data from an array
+     * @param data The array data
+     */
+    ListBoy.CreateArray = function (data) {
+        var container = document.createElement("div");
+        container.className = "array";
+        for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
+            var item = data_1[_i];
+            container.appendChild(this.CreateItem(item));
+        }
+        alert(container.outerHTML);
+        return container;
     };
     /** Builds as if from a dictionary */
     ListBoy.CreateData = function (data) {

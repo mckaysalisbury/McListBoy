@@ -5,6 +5,7 @@
         "sourceMap": true,
         "lib": ["dom", "es2017"],
         "emitBOM": true,
-        "charset": "utf8"
+        "charset": "utf8",
+        "watch": true
     }
 }

@@ -62,11 +62,12 @@ class ListBoy {
             return item.table();
         } else if (item.constructor == Object) {  // JSON
             return ListBoy.CreateData(item);
+        } else if (typeof(item) == "number") {
+            return document.createTextNode(item.toString());
         } else if (typeof(item) == "string") {
             return ListBoy.CreateText(item, "tlhingan");
         } else if (Array.isArray(item)) {
-            alert("I haven't written support for arrays yet.");
-            return this.CreateText("An Array will go here");
+            return ListBoy.CreateArray(item);
         } else if (typeof(item) === "object") {
             if (item.tagName === "SPAN") {
                 return item;
@@ -84,8 +85,6 @@ class ListBoy {
      * @param defaultClass The class to use (if it isn't markdown)
      */
     private static CreateText(item: string, defaultClass: string = null) : HTMLElement | Text {
-        // alert("CreateText");
-        // return document.createTextNode("hello");
         if (item[0] === "`") {  // This is the indicator for markdown mode
             var pieces = item.substring(1).split("*");
             var language = "descriptive"; // presume no formatting
@@ -132,6 +131,20 @@ class ListBoy {
                 return document.createTextNode(item);
             }
         }
+    }
+
+    /**
+     * Creates data from an array
+     * @param data The array data
+     */
+    private static CreateArray(data: Array<any>): HTMLDivElement {
+        var container = document.createElement("div");
+        container.className = "array";
+        for(var item of data) {
+            container.appendChild(this.CreateItem(item));
+        }
+        alert(container.outerHTML);
+        return container;
     }
 
     /** Builds as if from a dictionary */
