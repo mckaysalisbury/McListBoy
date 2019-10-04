@@ -150,7 +150,6 @@ var ListBoy = /** @class */ (function () {
             var item = data_1[_i];
             container.appendChild(this.CreateItem(item));
         }
-        alert(container.outerHTML);
         return container;
     };
     /** Builds as if from a dictionary */

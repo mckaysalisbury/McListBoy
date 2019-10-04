@@ -143,7 +143,6 @@ class ListBoy {
         for(var item of data) {
             container.appendChild(this.CreateItem(item));
         }
-        alert(container.outerHTML);
         return container;
     }
 
