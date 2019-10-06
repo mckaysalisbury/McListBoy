@@ -1,4 +1,7 @@
-﻿function isString(data) {
+﻿function isIRenderSelf(item) {
+    return 'Render' in item; // I could also check if it's a function or something, maybe later.
+}
+function isString(data) {
     return data.constructor === String;
 }
 /** These are the CSS classes that ListBoy emits and recommends get styled by the caller */
@@ -8,12 +11,12 @@ var CSSClasses;
     CSSClasses["Array"] = "array";
     /** A div rendered from a raw JSON object */
     CSSClasses["Dictionary"] = "dictionary";
-    /** A span for a raw string */
-    CSSClasses["String"] = "string";
     /** A div for a Dictionary Entry that is just `string: string` */
     CSSClasses["SimpleDictionaryEntry"] = "simple-dictionary-entry";
     /** A div for a Dicionary Entry that is more complex than `string: string` */
     CSSClasses["ComplexDictionaryEntry"] = "complex-dictionary-entry";
+    /** A default span for a raw string */
+    CSSClasses["StringDefault"] = "string-default";
     /** A default span for the key of a dictionary, i.e. a name of a JSON member, with a string value */
     CSSClasses["SimpleKeyDefault"] = "simple-key-default";
     /** A default span for the key of a dictionary, i.e. a name of a JSON member, with a complex value */
@@ -44,7 +47,11 @@ var ListBoy = /** @class */ (function () {
     ListBoy.RenderTo = function (dataObject, targetId) {
         var _this = this;
         document.addEventListener("DOMContentLoaded", function (event) {
-            document.getElementById(targetId).appendChild(_this.CreateItem(dataObject));
+            var target = document.getElementById(targetId);
+            if (target === null) {
+                alert("ListBoy couldn't find your target: " + targetId);
+            }
+            target.appendChild(_this.CreateItem(dataObject));
         });
     };
     /**
@@ -52,23 +59,23 @@ var ListBoy = /** @class */ (function () {
      * @param item The item to build
      */
     ListBoy.CreateItem = function (item) {
-        if (item instanceof POV) {
-            return item.Render();
-        }
-        else if (item.constructor == Object) { // JSON
+        if (item.constructor == Object) { // JSON
             return this.CreateData(item);
         }
         else if (typeof (item) == "number") {
             return document.createTextNode(item.toString());
         }
         else if (typeof (item) == "string") {
-            return this.CreateText(item, CSSClasses.String);
+            return this.CreateText(item, CSSClasses.StringDefault);
         }
         else if (Array.isArray(item)) {
             return this.CreateArray(item);
         }
         else if (typeof (item) === "object") {
-            if (item.tagName === "SPAN") {
+            if (isIRenderSelf(item)) {
+                return item.Render();
+            }
+            else if (item.tagName === "SPAN") {
                 return item;
             }
             else {
