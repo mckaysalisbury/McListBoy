@@ -36,6 +36,28 @@ function isString(data: any): boolean {
     return data.constructor === String;
 }
 
+/** These are the CSS classes that ListBoy emits and recommends get styled by the caller */
+enum CSSClasses {
+    /** A div rendered from an array */
+    Array = "array",
+    /** A div rendered from a raw JSON object */
+    Dictionary = "dictionary",
+    /** A span for a raw string */
+    String = "string",
+    /** A div for a Dictionary Entry that is just `string: string` */
+    SimpleDictionaryEntry = "simple-dictionary-entry",
+    /** A div for a Dicionary Entry that is more complex than `string: string` */
+    ComplexDictionaryEntry = "complex-dictionary-entry",
+    /** A default span for the key of a dictionary, i.e. a name of a JSON member, with a string value */
+    SimpleKeyDefault = "simple-key-default",
+    /** A default span for the key of a dictionary, i.e. a name of a JSON member, with a complex value */
+    ComplexKeyDefault = "complex-key-default",
+    /** A div which always contains the header of a complex entry */
+    ComplexEntryHeader = "complex-entry-header",
+    /** A div which always contains the body of a complex entry */
+    ComplexEntryBody = "complex-entry-body",
+}
+
 /**
  * The class that knows how to render data objects
  * Usage:
@@ -65,7 +87,7 @@ class ListBoy {
         } else if (typeof(item) == "number") {
             return document.createTextNode(item.toString());
         } else if (typeof(item) == "string") {
-            return ListBoy.CreateText(item, "tlhingan");
+            return ListBoy.CreateText(item, CSSClasses.String);
         } else if (Array.isArray(item)) {
             return ListBoy.CreateArray(item);
         } else if (typeof(item) === "object") {
@@ -84,7 +106,7 @@ class ListBoy {
      * @param item The string for the span
      * @param defaultClass The class to use (if it isn't markdown)
      */
-    private static CreateText(item: string, defaultClass: string = null) : HTMLElement | Text {
+    private static CreateText(item: string, defaultClass = null) : HTMLElement | Text {
         if (item[0] === "`") {  // This is the indicator for markdown mode
             var pieces = item.substring(1).split("*");
             var language = "descriptive"; // presume no formatting
@@ -121,7 +143,7 @@ class ListBoy {
             var classToSurround = defaultClass;
             if (classToSurround != null) {
                 var element = document.createElement("span");
-                element.classList.add(defaultClass);
+                element.className = defaultClass;
 
                 element.appendChild(document.createTextNode(item));
                 // element.innerHTML = item;
@@ -139,7 +161,7 @@ class ListBoy {
      */
     private static CreateArray(data: Array<any>): HTMLDivElement {
         var container = document.createElement("div");
-        container.className = "array";
+        container.className = CSSClasses.Array;
         for(var item of data) {
             container.appendChild(this.CreateItem(item));
         }
@@ -149,7 +171,7 @@ class ListBoy {
     /** Builds as if from a dictionary */
     private static CreateData(data: Object) : HTMLDivElement {
         var container = document.createElement("div");
-        container.className = "container"
+        container.className = CSSClasses.Dictionary;
 
         for(let [key, value] of Object.entries(data)) {
 
@@ -159,18 +181,19 @@ class ListBoy {
                 var itemContainer = document.createElement("div");
                 container.appendChild(itemContainer);
                 if (isString(value)) {
-                    itemContainer.appendChild(ListBoy.CreateText(key, "english"));
+                    itemContainer.className = CSSClasses.SimpleDictionaryEntry;
+                    itemContainer.appendChild(ListBoy.CreateText(key, CSSClasses.SimpleKeyDefault));
                     itemContainer.appendChild(document.createTextNode(" "));  // emspace
                     itemContainer.appendChild(ListBoy.CreateItem(value));
                 } else {
-                    var item = document.createElement("div");
-                    item.classList.add("item");
-                    var header = document.createElement("div");
-                    header.classList.add("itemHeader");
-                    header.appendChild(ListBoy.CreateText(key));
-                    item.appendChild(header);
-                    item.appendChild(ListBoy.CreateItem(value));
-                    itemContainer.appendChild(item);
+                    itemContainer.className = CSSClasses.ComplexDictionaryEntry;
+                    var entryHeader = document.createElement("div");
+                    entryHeader.className = CSSClasses.ComplexEntryHeader;
+                    entryHeader.appendChild(ListBoy.CreateText(key, CSSClasses.ComplexKeyDefault));
+                    itemContainer.appendChild(entryHeader);
+                    var entryBody = document.createElement("div");
+                    entryBody.className = CSSClasses.ComplexEntryBody;
+                    itemContainer.appendChild(ListBoy.CreateItem(value));
                 }
             }
         }

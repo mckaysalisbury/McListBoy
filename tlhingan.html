@@ -8,42 +8,45 @@
             h1 {
                 text-align: center;
             }
-            .tlhIngan {
-                font-weight: bolder;
-            }
-            .english {
-                font-style: italic;
-            }
-            .descriptive {
-                /* at one point, I needed to reset, because I was nesting tags,
-                but I don't think I do anymore */
-                /* font-weight: normal;
-                font-style: normal; */
-            }
             div {
                 margin: 3px;
                 text-align: center;
             }
-            .container {
+
+            .dictionary {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
                 text-align: center;
                 flex-direction: column;
-
-                /* border: 1px solid orange; */
             }
-            .item {
+
+            .array {
                 border: 1px solid orange;
             }
-            .itemHeader {
+
+            .simple-key-default, .italics, .english {
+                font-style: italic;
+            }
+
+            .string, .bold, .tlhingan {
+                font-weight: bolder;
+            }
+
+            .complex-dictionary-entry {
+                border: 1px solid red;
+            }
+
+            .complex-entry-header {
                 text-decoration: underline;
             }
+
+
+
+
+
             .horizontal {
                 flex-direction: row;
-            }
-            dt {
-                text-align: center;
             }
 
             /* For POV tables */
@@ -327,7 +330,7 @@
     <body>
         <h1>mIqey tlhIngan Hol nompuq</h1>
         <div id="main"></div>
-        Key
+        <h2>Key</h2>
         <ul>
             <li><span class="tlhingan">tlhingan</span></li>
             <li><span class="english">English</span></li>

@@ -33,6 +33,28 @@ var POV = /** @class */ (function () {
 function isString(data) {
     return data.constructor === String;
 }
+/** These are the CSS classes that ListBoy emits and recommends get styled by the caller */
+var CSSClasses;
+(function (CSSClasses) {
+    /** A div rendered from an array */
+    CSSClasses["Array"] = "array";
+    /** A div rendered from a raw JSON object */
+    CSSClasses["Dictionary"] = "dictionary";
+    /** A span for a raw string */
+    CSSClasses["String"] = "string";
+    /** A div for a Dictionary Entry that is just `string: string` */
+    CSSClasses["SimpleDictionaryEntry"] = "simple-dictionary-entry";
+    /** A div for a Dicionary Entry that is more complex than `string: string` */
+    CSSClasses["ComplexDictionaryEntry"] = "complex-dictionary-entry";
+    /** A default span for the key of a dictionary, i.e. a name of a JSON member, with a string value */
+    CSSClasses["SimpleKeyDefault"] = "simple-key-default";
+    /** A default span for the key of a dictionary, i.e. a name of a JSON member, with a complex value */
+    CSSClasses["ComplexKeyDefault"] = "complex-key-default";
+    /** A div which always contains the header of a complex entry */
+    CSSClasses["ComplexEntryHeader"] = "complex-entry-header";
+    /** A div which always contains the body of a complex entry */
+    CSSClasses["ComplexEntryBody"] = "complex-entry-body";
+})(CSSClasses || (CSSClasses = {}));
 /**
  * The class that knows how to render data objects
  * Usage:
@@ -66,7 +88,7 @@ var ListBoy = /** @class */ (function () {
             return document.createTextNode(item.toString());
         }
         else if (typeof (item) == "string") {
-            return ListBoy.CreateText(item, "tlhingan");
+            return ListBoy.CreateText(item, CSSClasses.String);
         }
         else if (Array.isArray(item)) {
             return ListBoy.CreateArray(item);
@@ -129,7 +151,7 @@ var ListBoy = /** @class */ (function () {
             var classToSurround = defaultClass;
             if (classToSurround != null) {
                 var element = document.createElement("span");
-                element.classList.add(defaultClass);
+                element.className = defaultClass;
                 element.appendChild(document.createTextNode(item));
                 // element.innerHTML = item;
                 return element;
@@ -145,7 +167,7 @@ var ListBoy = /** @class */ (function () {
      */
     ListBoy.CreateArray = function (data) {
         var container = document.createElement("div");
-        container.className = "array";
+        container.className = CSSClasses.Array;
         for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
             var item = data_1[_i];
             container.appendChild(this.CreateItem(item));
@@ -155,7 +177,7 @@ var ListBoy = /** @class */ (function () {
     /** Builds as if from a dictionary */
     ListBoy.CreateData = function (data) {
         var container = document.createElement("div");
-        container.className = "container";
+        container.className = CSSClasses.Dictionary;
         for (var _i = 0, _a = Object.entries(data); _i < _a.length; _i++) {
             var _b = _a[_i], key = _b[0], value = _b[1];
             if (typeof (value) === "function") {
@@ -165,19 +187,20 @@ var ListBoy = /** @class */ (function () {
                 var itemContainer = document.createElement("div");
                 container.appendChild(itemContainer);
                 if (isString(value)) {
-                    itemContainer.appendChild(ListBoy.CreateText(key, "english"));
+                    itemContainer.className = CSSClasses.SimpleDictionaryEntry;
+                    itemContainer.appendChild(ListBoy.CreateText(key, CSSClasses.SimpleKeyDefault));
                     itemContainer.appendChild(document.createTextNode(" ")); // emspace
                     itemContainer.appendChild(ListBoy.CreateItem(value));
                 }
                 else {
-                    var item = document.createElement("div");
-                    item.classList.add("item");
-                    var header = document.createElement("div");
-                    header.classList.add("itemHeader");
-                    header.appendChild(ListBoy.CreateText(key));
-                    item.appendChild(header);
-                    item.appendChild(ListBoy.CreateItem(value));
-                    itemContainer.appendChild(item);
+                    itemContainer.className = CSSClasses.ComplexDictionaryEntry;
+                    var entryHeader = document.createElement("div");
+                    entryHeader.className = CSSClasses.ComplexEntryHeader;
+                    entryHeader.appendChild(ListBoy.CreateText(key, CSSClasses.ComplexKeyDefault));
+                    itemContainer.appendChild(entryHeader);
+                    var entryBody = document.createElement("div");
+                    entryBody.className = CSSClasses.ComplexEntryBody;
+                    itemContainer.appendChild(ListBoy.CreateItem(value));
                 }
             }
         }
