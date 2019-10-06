@@ -58,6 +58,11 @@ enum CSSClasses {
     ComplexEntryBody = "complex-entry-body",
 }
 
+enum MarkdownFormatting {
+    Emphasis = "em",
+    Strong = "strong",
+}
+
 /**
  * The class that knows how to render data objects
  * Usage:
@@ -71,7 +76,7 @@ class ListBoy {
      */
     static RenderTo(dataObject: any, targetId: string): void {
         document.addEventListener("DOMContentLoaded", event => {
-            document.getElementById(targetId).appendChild(ListBoy.CreateItem(dataObject));
+            document.getElementById(targetId).appendChild(this.CreateItem(dataObject));
         });
     }
 
@@ -83,13 +88,13 @@ class ListBoy {
         if (item instanceof POV) {
             return item.table();
         } else if (item.constructor == Object) {  // JSON
-            return ListBoy.CreateData(item);
+            return this.CreateData(item);
         } else if (typeof(item) == "number") {
             return document.createTextNode(item.toString());
         } else if (typeof(item) == "string") {
-            return ListBoy.CreateText(item, CSSClasses.String);
+            return this.CreateText(item, CSSClasses.String);
         } else if (Array.isArray(item)) {
-            return ListBoy.CreateArray(item);
+            return this.CreateArray(item);
         } else if (typeof(item) === "object") {
             if (item.tagName === "SPAN") {
                 return item;
@@ -101,6 +106,17 @@ class ListBoy {
         }
     }
 
+    private static MarkdownTag(content: string, format: MarkdownFormatting) : HTMLElement | Text {
+        if (format === null) {
+            return document.createTextNode(content);
+        }
+        var element = document.createElement(format);
+        // Gah, Hack to support <sup> blocks.
+        element.innerHTML = content;
+        // element.appendChild(document.createTextNode(content));
+        return element;
+    }
+
     /**
      * Creates a text Node, potentially inside a span (dealing with pseudo markdown)
      * @param item The string for the span
@@ -109,49 +125,36 @@ class ListBoy {
     private static CreateText(item: string, defaultClass = null) : HTMLElement | Text {
         if (item[0] === "`") {  // This is the indicator for markdown mode
             var pieces = item.substring(1).split("*");
-            var language = "descriptive"; // presume no formatting
+            var format : MarkdownFormatting = null; // presume no formatting
             var container = document.createElement("span");
             for (var piece of pieces) {
                 if (piece !== "") {
-                    var span = document.createElement("span");
-                    span.classList.add(language);
-
-                    // Gah, Hack to support <sup> blocks.
-                    span.innerHTML = piece;
-                    // span.appendChild(document.createTextNode(piece));
-
-                    container.appendChild(span);
+                    container.appendChild(this.MarkdownTag(piece, format))
                 }
                 // adjust language state
-                if (language === "descriptive") { // One star always puts us into italics
-                    language = "english";
+                if (format === null) { // One star always puts us into italics
+                    format = MarkdownFormatting.Emphasis;
                 } else {
                     if (piece === "") { // This means two stars
                         // I'm not convinced this works with nested ** and *
-                        if (language === "english") {
-                            language = "tlhingan";
+                        if (format === MarkdownFormatting.Emphasis) {
+                            format = MarkdownFormatting.Strong
                         } else {
-                            language = "english";
+                            format = MarkdownFormatting.Emphasis
                         }
                     } else {
-                        language = "descriptive"
+                        format = null;
                     }
                 }
             }
             return container;
         } else {
-            var classToSurround = defaultClass;
-            if (classToSurround != null) {
-                var element = document.createElement("span");
-                element.className = defaultClass;
+            var element = document.createElement("span");
+            element.className = defaultClass;
 
-                element.appendChild(document.createTextNode(item));
-                // element.innerHTML = item;
-
-                return element
-            } else {
-                return document.createTextNode(item);
-            }
+            element.appendChild(document.createTextNode(item));
+            // element.innerHTML = item;
+            return element
         }
     }
 
@@ -182,20 +185,20 @@ class ListBoy {
                 container.appendChild(itemContainer);
                 if (isString(value)) {
                     itemContainer.className = CSSClasses.SimpleDictionaryEntry;
-                    itemContainer.appendChild(ListBoy.CreateText(key, CSSClasses.SimpleKeyDefault));
+                    itemContainer.appendChild(this.CreateText(key, CSSClasses.SimpleKeyDefault));
                     itemContainer.appendChild(document.createTextNode(" "));  // emspace
-                    itemContainer.appendChild(ListBoy.CreateItem(value));
+                    itemContainer.appendChild(this.CreateItem(value));
                 } else {
                     itemContainer.className = CSSClasses.ComplexDictionaryEntry;
 
                     var entryHeader = document.createElement("div");
                     entryHeader.className = CSSClasses.ComplexEntryHeader;
-                    entryHeader.appendChild(ListBoy.CreateText(key, CSSClasses.ComplexKeyDefault));
+                    entryHeader.appendChild(this.CreateText(key, CSSClasses.ComplexKeyDefault));
                     itemContainer.appendChild(entryHeader);
-                    
+
                     var entryBody = document.createElement("div");
                     entryBody.className = CSSClasses.ComplexEntryBody;
-                    entryBody.appendChild(ListBoy.CreateItem(value));
+                    entryBody.appendChild(this.CreateItem(value));
                     itemContainer.appendChild(entryBody);
                 }
             }

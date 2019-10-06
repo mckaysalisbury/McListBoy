@@ -25,11 +25,13 @@
                 border: 1px solid orange;
             }
 
-            .simple-key-default, .italics, .english {
+            /* english */
+            em, .simple-key-default {
                 font-style: italic;
             }
 
-            .string, .bold, .tlhingan {
+            /* tlhingan */
+            strong, .string {
                 font-weight: bolder;
             }
 
@@ -336,11 +338,11 @@
         <div id="main"></div>
         <h2>Key</h2>
         <ul>
-            <li><span class="tlhingan">tlhingan</span></li>
-            <li><span class="english">English</span></li>
-            <li><span class="descriptive">descriptive</span></li>
-            <li><span class="descriptive">[condition]</span></li>
-            <li><span class="english">[optional]</span></li>
+            <li><strong>tlhingan</strong></li>
+            <li><em>English</em></li>
+            <li>descriptive</li>
+            <li>[condition]</li>
+            <li><em>[optional]</em></li>
             <li>💬: Being capable of language</li>
             <li id="pov" style="float:left;"></li>
         </ul>
