@@ -200,7 +200,8 @@ var ListBoy = /** @class */ (function () {
                     itemContainer.appendChild(entryHeader);
                     var entryBody = document.createElement("div");
                     entryBody.className = CSSClasses.ComplexEntryBody;
-                    itemContainer.appendChild(ListBoy.CreateItem(value));
+                    entryBody.appendChild(ListBoy.CreateItem(value));
+                    itemContainer.appendChild(entryBody);
                 }
             }
         }

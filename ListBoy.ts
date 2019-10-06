@@ -187,13 +187,16 @@ class ListBoy {
                     itemContainer.appendChild(ListBoy.CreateItem(value));
                 } else {
                     itemContainer.className = CSSClasses.ComplexDictionaryEntry;
+
                     var entryHeader = document.createElement("div");
                     entryHeader.className = CSSClasses.ComplexEntryHeader;
                     entryHeader.appendChild(ListBoy.CreateText(key, CSSClasses.ComplexKeyDefault));
                     itemContainer.appendChild(entryHeader);
+                    
                     var entryBody = document.createElement("div");
                     entryBody.className = CSSClasses.ComplexEntryBody;
-                    itemContainer.appendChild(ListBoy.CreateItem(value));
+                    entryBody.appendChild(ListBoy.CreateItem(value));
+                    itemContainer.appendChild(entryBody);
                 }
             }
         }
