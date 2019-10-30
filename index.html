@@ -2,7 +2,9 @@
     <head>
         <script src="ListBoy.js"></script>
         <script>
-            ListBoy.RenderTo({ a: "b", c: ["d", "e"] }, "ListBoyPleasePutMyStuffHere")
+            var data = { a: "b", c: ["d", "e"] };
+            ListBoy.RenderTo(data, "ListBoyPleasePutMyStuffHere")
+            ListBoy.RenderTo(data, "lines")
         </script>
         <style>
             .code {
@@ -11,6 +13,13 @@
             textarea {
                 width: 100%;
                 height: 250px;
+            }
+            #lines div {
+                border: 1px solid blue;
+                margin:2px;
+            }
+            #lines span {
+                padding-right: 4px
             }
         </style>
     </head>
@@ -54,14 +63,17 @@
     </body>
 </html>
         </textarea>
-        <p>Will look something like this.</p>
+        <p>Will look something like this:</p>
 
         <div id="ListBoyPleasePutMyStuffHere"></div>
 
         <p>
-            Admittedly, this isn't pretty, but there are a lot of different CSS classes that are
-            emitted so that you can make it look prettier.
+            Admittedly, this isn't pretty, and looks chaotic, on the page as is, but the structure
+            emitted is rich, and there are a lot of different CSS classes that are emitted so that
+            you can easily make it look more organized.
         </p>
+
+        <div id="lines"></div>
 
         <h3>Reference Sample</h3>
 
