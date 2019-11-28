@@ -31,6 +31,12 @@ enum CSSClasses {
     ComplexEntryHeader = "complex-entry-header",
     /** A div which always contains the body of a complex entry */
     ComplexEntryBody = "complex-entry-body",
+    /** A div which always contains the header of a null-valued entry */
+    NullDictionaryEntry = "null-dictionary-entry",
+    /** A default span for the key of a dictionary, i.e. a name of a JSON member, with a complex value */
+    NullKeyDefault = "null-key-default",
+    /** A span which is a placeholder for a null value */
+    NullValue = "null-value",
 }
 
 enum MarkdownFormatting {
@@ -51,7 +57,7 @@ class ListBoy {
      */
     static RenderTo(dataObject: any, targetId: string): void {
         document.addEventListener("DOMContentLoaded", event => {
-            var target = document.getElementById(targetId);
+            let target = document.getElementById(targetId);
             if (target === null) {
                 alert("ListBoy couldn't find your target: " + targetId);
             }
@@ -64,7 +70,9 @@ class ListBoy {
      * @param item The item to build
      */
     static CreateItem(item: any): HTMLElement | Text {
-        if (item.constructor == Object) {  // JSON
+        if (item === null) {
+            return this.CreateNull();
+        } else if (item.constructor == Object) {  // JSON
             return this.CreateData(item);
         } else if (typeof(item) == "number") {
             return document.createTextNode(item.toString());
@@ -89,7 +97,7 @@ class ListBoy {
         if (format === null) {
             return document.createTextNode(content);
         }
-        var element = document.createElement(format);
+        let element = document.createElement(format);
         // Gah, Hack to support <sup> blocks.
         element.innerHTML = content;
         // element.appendChild(document.createTextNode(content));
@@ -103,10 +111,10 @@ class ListBoy {
      */
     private static CreateText(item: string, defaultClass = null) : HTMLElement | Text {
         if (item[0] === "`") {  // This is the indicator for markdown mode
-            var pieces = item.substring(1).split("*");
-            var format : MarkdownFormatting = null; // presume no formatting
-            var container = document.createElement("span");
-            for (var piece of pieces) {
+            let pieces = item.substring(1).split("*");
+            let format : MarkdownFormatting = null; // presume no formatting
+            let container = document.createElement("span");
+            for (let piece of pieces) {
                 if (piece !== "") {
                     container.appendChild(this.MarkdownTag(piece, format))
                 }
@@ -128,7 +136,7 @@ class ListBoy {
             }
             return container;
         } else {
-            var element = document.createElement("span");
+            let element = document.createElement("span");
             element.className = defaultClass;
 
             element.appendChild(document.createTextNode(item));
@@ -138,13 +146,22 @@ class ListBoy {
     }
 
     /**
+     * Creates a null value
+     */
+    private static CreateNull(): HTMLElement {
+        let container = document.createElement('span');
+        container.className = CSSClasses.NullValue;
+        return container;
+    }
+
+    /**
      * Creates data from an array
      * @param data The array data
      */
     private static CreateArray(data: Array<any>): HTMLDivElement {
-        var container = document.createElement("div");
+        let container = document.createElement("div");
         container.className = CSSClasses.Array;
-        for(var item of data) {
+        for(let item of data) {
             container.appendChild(this.CreateItem(item));
         }
         return container;
@@ -152,7 +169,7 @@ class ListBoy {
 
     /** Builds as if from a dictionary */
     private static CreateData(data: Object) : HTMLDivElement {
-        var container = document.createElement("div");
+        let container = document.createElement("div");
         container.className = CSSClasses.Dictionary;
 
         for(let [key, value] of Object.entries(data)) {
@@ -160,9 +177,13 @@ class ListBoy {
             if (typeof(value) === "function") {
                 value(container);
             } else {
-                var itemContainer = document.createElement("div");
+                let itemContainer = document.createElement("div");
                 container.appendChild(itemContainer);
-                if (isString(value)) {
+                if (value === null) {
+                    itemContainer.classList.add(CSSClasses.NullDictionaryEntry);
+                    itemContainer.appendChild(this.CreateText(key, CSSClasses.NullKeyDefault));
+                    itemContainer.appendChild(this.CreateItem(null));
+                } else if (isString(value)) {
                     itemContainer.className = CSSClasses.SimpleDictionaryEntry;
                     itemContainer.appendChild(this.CreateText(key, CSSClasses.SimpleKeyDefault));
                     itemContainer.appendChild(document.createTextNode(" "));  // emspace
@@ -170,12 +191,12 @@ class ListBoy {
                 } else {
                     itemContainer.className = CSSClasses.ComplexDictionaryEntry;
 
-                    var entryHeader = document.createElement("div");
+                    let entryHeader = document.createElement("div");
                     entryHeader.className = CSSClasses.ComplexEntryHeader;
                     entryHeader.appendChild(this.CreateText(key, CSSClasses.ComplexKeyDefault));
                     itemContainer.appendChild(entryHeader);
 
-                    var entryBody = document.createElement("div");
+                    let entryBody = document.createElement("div");
                     entryBody.className = CSSClasses.ComplexEntryBody;
                     entryBody.appendChild(this.CreateItem(value));
                     itemContainer.appendChild(entryBody);

@@ -17,12 +17,12 @@ class POV implements IRenderSelf{
     }
 
     Render() : HTMLElement {
-        var table = document.createElement("table");
+        let table = document.createElement("table");
         for (const row of this.data) {
-            var tableRow = document.createElement("tr");
+            let tableRow = document.createElement("tr");
             table.appendChild(tableRow);
             for (const column of row) {
-                var tableData = document.createElement("td");
+                let tableData = document.createElement("td");
                 tableRow.appendChild(tableData);
                 tableData.appendChild(ListBoy.CreateItem(column));
             }

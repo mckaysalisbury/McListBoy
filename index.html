@@ -2,7 +2,7 @@
     <head>
         <script src="ListBoy.js"></script>
         <script>
-            var data = { a: "b", c: ["d", "e"] };
+            let data = { a: "b", c: ["d", "e"], f: null };
             ListBoy.RenderTo(data, "ListBoyPleasePutMyStuffHere")
             ListBoy.RenderTo(data, "lines")
         </script>
@@ -19,7 +19,10 @@
                 margin:2px;
             }
             #lines span {
-                padding-right: 4px
+                padding-right: 4px;
+            }
+            #lines .null-value {
+                border: 1px dashed red;
             }
         </style>
     </head>
@@ -52,7 +55,7 @@
         <script src="https://github.mckaysalisbury.com/ListBoy/ListBoy.js"></script>
         <script>
             // #2 Declare the structure
-            var myContent = { a: "b", c: ["d", "e"] }
+            let myContent = { a: "b", c: ["d", "e"], f: null }
             // #4 Call to ListBoy
             ListBoy.RenderTo(myContent, "ListBoyPleasePutMyStuffHere");
         </script>

@@ -95,7 +95,7 @@
         }
 
         language = function(item, cssClass) {
-            var node = document.createElement("span")
+            let node = document.createElement("span");
             node.classList.add(cssClass);
             node.appendChild(document.createTextNode(item));
             return node;
@@ -112,7 +112,7 @@
         };
 
 
-        var data = {
+        let data = {
             action: makeHorizontal,
             // Adverbs: { },
             Verbs: {
@@ -188,7 +188,7 @@
                         "as soon as": "-DI'",
                         "before": "-pa'",
                         "while": "-[taH]viS",
-                        "for": "-meH",
+                        "`*for / so that / in order to* (purpose)": "-meH",
                         "due to": "-mo'",
                         "may / let": "-jaj",
                         "`*-ness / -tion* (nominalizer)": "-ghach",
@@ -335,7 +335,7 @@
 
         ListBoy.RenderTo(data, "main");
 
-        var povLegend = new POV(
+        let povLegend = new POV(
             "first person singular (e.g. I / me)",
             "second person singular (e.g. you)",
             "third person singular (e.g. he, hers, it)",

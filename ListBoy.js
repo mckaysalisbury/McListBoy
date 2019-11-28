@@ -25,6 +25,12 @@ var CSSClasses;
     CSSClasses["ComplexEntryHeader"] = "complex-entry-header";
     /** A div which always contains the body of a complex entry */
     CSSClasses["ComplexEntryBody"] = "complex-entry-body";
+    /** A div which always contains the header of a null-valued entry */
+    CSSClasses["NullDictionaryEntry"] = "null-dictionary-entry";
+    /** A default span for the key of a dictionary, i.e. a name of a JSON member, with a complex value */
+    CSSClasses["NullKeyDefault"] = "null-key-default";
+    /** A span which is a placeholder for a null value */
+    CSSClasses["NullValue"] = "null-value";
 })(CSSClasses || (CSSClasses = {}));
 var MarkdownFormatting;
 (function (MarkdownFormatting) {
@@ -59,7 +65,10 @@ var ListBoy = /** @class */ (function () {
      * @param item The item to build
      */
     ListBoy.CreateItem = function (item) {
-        if (item.constructor == Object) { // JSON
+        if (item === null) {
+            return this.CreateNull();
+        }
+        else if (item.constructor == Object) { // JSON
             return this.CreateData(item);
         }
         else if (typeof (item) == "number") {
@@ -142,6 +151,14 @@ var ListBoy = /** @class */ (function () {
         }
     };
     /**
+     * Creates a null value
+     */
+    ListBoy.CreateNull = function () {
+        var container = document.createElement('span');
+        container.className = CSSClasses.NullValue;
+        return container;
+    };
+    /**
      * Creates data from an array
      * @param data The array data
      */
@@ -166,7 +183,12 @@ var ListBoy = /** @class */ (function () {
             else {
                 var itemContainer = document.createElement("div");
                 container.appendChild(itemContainer);
-                if (isString(value)) {
+                if (value === null) {
+                    itemContainer.classList.add(CSSClasses.NullDictionaryEntry);
+                    itemContainer.appendChild(this.CreateText(key, CSSClasses.NullKeyDefault));
+                    itemContainer.appendChild(this.CreateItem(null));
+                }
+                else if (isString(value)) {
                     itemContainer.className = CSSClasses.SimpleDictionaryEntry;
                     itemContainer.appendChild(this.CreateText(key, CSSClasses.SimpleKeyDefault));
                     itemContainer.appendChild(document.createTextNode(" ")); // emspace
