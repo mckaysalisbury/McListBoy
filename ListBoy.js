@@ -40,25 +40,39 @@ var MarkdownFormatting;
 /**
  * The class that knows how to render data objects
  * Usage:
- * ListBoy.Render({}, "main");
+ * ListBoy.RenderTo({}, "main");
  */
 var ListBoy = /** @class */ (function () {
     function ListBoy() {
     }
     /**
-     * Renders the data object into the target DOM object
+     * Renders the data object into the target DOM object (when it's ready to do so)
      * @param dataObject The data to render
      * @param targetId The ID of the DOM object to render it into
      */
     ListBoy.RenderTo = function (dataObject, targetId) {
         var _this = this;
-        document.addEventListener("DOMContentLoaded", function (event) {
-            var target = document.getElementById(targetId);
-            if (target === null) {
-                alert("ListBoy couldn't find your target: " + targetId);
-            }
-            target.appendChild(_this.CreateItem(dataObject));
-        });
+        if (document.readyState === "complete") {
+            this.ReadyToRenderTo(dataObject, targetId);
+        }
+        else {
+            document.addEventListener("DOMContentLoaded", function (event) {
+                _this.ReadyToRenderTo(dataObject, targetId);
+            });
+        }
+    };
+    /**
+     * Renders the data object into the target DOM object (presuming it's ready to do so)
+     * Precondition: The document is ready to get the document elements
+     * @param dataObject The data to render
+     * @param targetId The ID of the DOM object to render it into
+     */
+    ListBoy.ReadyToRenderTo = function (dataObject, targetId) {
+        var target = document.getElementById(targetId);
+        if (target === null) {
+            alert("ListBoy couldn't find your target: " + targetId);
+        }
+        target.appendChild(this.CreateItem(dataObject));
     };
     /**
      * Builds a single item (not recommended for external use)

@@ -47,22 +47,36 @@ enum MarkdownFormatting {
 /**
  * The class that knows how to render data objects
  * Usage:
- * ListBoy.Render({}, "main");
+ * ListBoy.RenderTo({}, "main");
  */
 class ListBoy {
     /**
-     * Renders the data object into the target DOM object
+     * Renders the data object into the target DOM object (when it's ready to do so)
      * @param dataObject The data to render
      * @param targetId The ID of the DOM object to render it into
      */
     static RenderTo(dataObject: any, targetId: string): void {
-        document.addEventListener("DOMContentLoaded", event => {
-            let target = document.getElementById(targetId);
-            if (target === null) {
-                alert("ListBoy couldn't find your target: " + targetId);
-            }
-            target.appendChild(this.CreateItem(dataObject));
-        });
+        if (document.readyState === "complete") {
+            this.ReadyToRenderTo(dataObject, targetId);
+        } else {
+            document.addEventListener("DOMContentLoaded", event => {
+                this.ReadyToRenderTo(dataObject, targetId);
+            });
+        }
+    }
+
+    /**
+     * Renders the data object into the target DOM object (presuming it's ready to do so)
+     * Precondition: The document is ready to get the document elements
+     * @param dataObject The data to render
+     * @param targetId The ID of the DOM object to render it into
+     */
+    static ReadyToRenderTo(dataObject: any, targetId: string) {
+        let target = document.getElementById(targetId);
+        if (target === null) {
+            alert("ListBoy couldn't find your target: " + targetId);
+        }
+        target.appendChild(this.CreateItem(dataObject));
     }
 
     /**

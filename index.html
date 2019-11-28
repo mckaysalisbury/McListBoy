@@ -4,7 +4,12 @@
         <script>
             let data = { a: "b", c: ["d", "e"], f: null };
             ListBoy.RenderTo(data, "ListBoyPleasePutMyStuffHere")
-            ListBoy.RenderTo(data, "lines")
+
+            // This should work on any document ready state
+            setTimeout(() => {
+                ListBoy.RenderTo(data, "lines")
+            }, 1);
+
         </script>
         <style>
             .code {
@@ -56,6 +61,7 @@
         <script>
             // #2 Declare the structure
             let myContent = { a: "b", c: ["d", "e"], f: null }
+
             // #4 Call to ListBoy
             ListBoy.RenderTo(myContent, "ListBoyPleasePutMyStuffHere");
         </script>
