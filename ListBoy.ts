@@ -25,6 +25,8 @@ enum CSSClasses {
     StringDefault = "string-default",
     /** A default span for the key of a dictionary, i.e. a name of a JSON member, with a string value */
     SimpleKeyDefault = "simple-key-default",
+    /** An empty span between a simple key and a string value*/
+    SimpleSeparator = "simple-separator",
     /** A default span for the key of a dictionary, i.e. a name of a JSON member, with a complex value */
     ComplexKeyDefault = "complex-key-default",
     /** A div which always contains the header of a complex entry */
@@ -112,9 +114,7 @@ class ListBoy {
             return document.createTextNode(content);
         }
         let element = document.createElement(format);
-        // Gah, Hack to support <sup> blocks.
         element.innerHTML = content;
-        // element.appendChild(document.createTextNode(content));
         return element;
     }
 
@@ -200,7 +200,7 @@ class ListBoy {
                 } else if (isString(value)) {
                     itemContainer.className = CSSClasses.SimpleDictionaryEntry;
                     itemContainer.appendChild(this.CreateText(key, CSSClasses.SimpleKeyDefault));
-                    itemContainer.appendChild(document.createTextNode(" "));  // emspace
+                    itemContainer.appendChild(this.CreateText("", CSSClasses.SimpleSeparator));
                     itemContainer.appendChild(this.CreateItem(value));
                 } else {
                     itemContainer.className = CSSClasses.ComplexDictionaryEntry;
