@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>McKay Salisbury's blueprint</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: #eafbf0;
+        background-image: linear-gradient(to right, #eafbf0, #edf3fe)
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      h6 {
+        position: fixed;
+        bottom: 0;
+      }
+
+      div {
+        margin: 3px;
+      }
+
+      .dictionary {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          text-align: center;
+          flex-direction: column;
+      }
+
+      .complex-key-default {
+        font-weight: bolder;
+        color: #0b9a41;
+      }
+
+      .enhanceChildren > .complex-dictionary-entry{
+        border: 0px;
+        background: white;
+        border-radius: 25px;
+        padding: 10px;
+      }
+
+      a:link {
+        color: #3c81f4
+      }
+
+      .complex-dictionary-entry {
+        border: 1px dotted #3c81f4;
+        border-radius: 10px;
+        padding: 5px;
+      }
+
+      .horizontal {
+        flex-direction: row;
+      }
+
+      .array > div, .array > span{
+        display: block;
+        border: 1px dashed #066027;
+        border-top: 0px;
+        padding: 2px;
+        margin: 0px;
+      }
+      .array > span:first-child, .array > div:first-child {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        border-top: 1px dashed #066027;
+      }
+      .array > span:last-child, .array > div:last-child {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+      .dictionary > .simple-dictionary-entry > .simple-key-default::after {
+        content: ": ";
+      }
+
+      #main > .dictionary > div > div > .complex-key-default {
+        font-size: larger;
+      }
+
+    </style>
+    <script src='https://github.mckaysalisbury.com/ListBoy/ListBoy.js'></script>
+    <script>
+
+      makeHorizontal = function makeHorizontal(target) {
+        target.classList.add('horizontal');
+      };
+      roundChildren = function roundChildren(target) {
+        target.classList.add('enhanceChildren');
+      }
+      const blueprint = {
+        action: makeHorizontal,
+        another: roundChildren,
+        'Who Am I?': {
+          'Where I have worked': [
+            'Dave',
+            'Hulu',
+            'FDIC',
+            'TSYS',
+          ],
+          'Where have I lived': [
+            '<iframe src="https://www.google.com/maps/embed?pb=!1m76!1m12!1m3!1d13248392.062890904!2d-106.8450095774024!3d35.83745965207871!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m61!3e2!4m5!1s0x87528ef8ed5eba6f%3A0x7229563bc344160!2sWest%20Jordan%2C%20UT!3m2!1d40.6096698!2d-111.9391031!4m5!1s0x54aca3a4c5b26eaf%3A0x24cb77ec2cf8c1aa!2sTwin%20Falls%2C%20Idaho!3m2!1d42.555838099999995!2d-114.4700518!4m5!1s0x874d7804e4b45119%3A0x642bc3cf90b21ed1!2sOrem%2C%20UT!3m2!1d40.2968979!2d-111.69464749999999!4m5!1s0x8640b8b4488d8501%3A0xca0d02def365053b!2sHouston%2C%20TX!3m2!1d29.7604267!2d-95.3698028!4m5!1s0x874d9b1eeeb9f5c5%3A0x63523d8413e98aa1!2sUtah%20Valley%20University%2C%20West%20University%20Parkway%2C%20Orem%2C%20UT!3m2!1d40.2787626!2d-111.71537389999999!4m5!1s0x874d90bc4aa0b68d%3A0xbf3eb3a3f30fdc4c!2sBrigham%20Young%20University%2C%20Provo%2C%20UT!3m2!1d40.2518435!2d-111.6493156!4m5!1s0x874d7804e4b45119%3A0x642bc3cf90b21ed1!2sOrem%2C%20UT!3m2!1d40.2968979!2d-111.69464749999999!4m5!1s0x874d84ff805c5c5d%3A0xbb675792ea6a1404!2sLindon%2C%20UT!3m2!1d40.343285699999996!2d-111.7207608!4m5!1s0x89b649671c566aef%3A0x2fc10cb0571036ba!2sVienna%2C%20VA!3m2!1d38.901222499999996!2d-77.2652604!4m5!1s0x80c2ba1edb77739d%3A0x3185e9d14beb59fe!2sCulver%20City%2C%20CA!3m2!1d34.021122399999996!2d-118.39646649999999!5e0!3m2!1sen!2sus!4v1576097333952!5m2!1sen!2sus" width="300" height="200" frameborder="0" style="border:0;" allowfullscreen=""></iframe>',
+            '<a href="https://goo.gl/maps/YDjaUF8GzgkX52Es8">(Google maps embed not working?)</a>',
+          ],
+          'My Devices': [
+            {
+              OS: 'Android',
+              Model: '<a href="https://www.razer.com/mobile/razer-phone-2">Razer Phone 2</a>',
+              Manufacturer: 'Razer',
+            },
+            {
+              Model: 'Fitbit Charge 2',
+            },
+            {
+              OS: 'Windows',
+              Usage: 'Games',
+              Development: '<a href="https://docs.microsoft.com/en-us/windows/wsl/faq">WSL</a> Ubuntu'
+            },
+            {
+              OS: 'Mac OSX',
+            },
+            {
+              OS: '<a href="https://freenas.org">FreeNAS</a>',
+              Storage: '12TB'
+            },
+            {
+              Model: 'Xbox One S'
+            },
+            {
+              Model: 'PS4 Pro',
+            },
+            {
+              Model: 'Nintendo Switch',
+            },
+            {
+              Model: 'Kindle 3',
+            },
+            {
+              Model: 'Raspberry Pi 3B+',
+              OS: 'Raspibian',
+            },
+          ],
+          "Languages I really like": [
+            "Relational Algebra",
+            "Typescript",
+            "Graphviz / DOT",
+            "Python",
+            "C#",
+          ]
+        },
+        'Hobbies': {
+          'Video Games': [
+            'StarCraft II',
+            'Portal',
+            'Zelda',
+            'Mario',
+            'Kingdom Hearts',
+            'Minecraft',
+          ],
+          'Comic Books': [
+            'Squirrel Girl',
+            'Captain America',
+            'Batman',
+            'Nightcrawler',
+            'Phil Coulson',
+          ],
+          'Music': [
+            'Jonathan Coulton',
+            'Daft Punk',
+            'Nobuo Uematsu',
+            'They Might Be Giants',
+            'John Williams',
+          ],
+          'Board Games': [
+            'Dominion',
+            'Carcassonne',
+            'Cosmic Encounters',
+          ],
+          'Other': [
+            'Lego',
+            '<a href="https://www.xkcd.com/426/">Geohashing</a>',
+            'Math Puzzles',
+            'Fun Holidays',
+            '<a href="javascript:alert(\'coming soon?\');">t-shirts</a>',
+            '<a href="https://stackoverflow.com/users/8384/mckay"><img src="https://stackexchange.com/users/flair/5267.png"/></a>',
+            '<a href="https://en.wikipedia.org/wiki/User:mckaysalisbury">Wikipedia</a>',
+          ]
+        },
+
+        Personality: {
+          Communication: {
+            Languages: {
+              English: 'Native',
+              Spanish: 'Intermediate',
+              Klingon: '<a href="https://github.mckaysalisbury.com/ListBoy/tlhIngan.html">Beginner</a>',
+            },
+            Styles: [
+              'Data-driven',
+              {
+                Organization: {
+                  Tools: [
+                    'Trello',
+                    'Google Sheets',
+                  ],
+                },
+                Direct: [ 
+                  'I\'m going to state my opinion directly.',
+                  'Please let me know if you think I\'m wrong.',
+                  'I care more about what is right than who is right.',
+                  'I also enjoy a little debate.',
+                ],
+                Comma: '<a href="https://en.wikipedia.org/wiki/Serial_comma">serial (Oxford)</a>',
+                Quotation: '<a href="https://en.wiktionary.org/wiki/logical_quotation#English">logical (British)</a>'
+              }
+            ],
+          },
+          Principles: [
+            'Treat everyone with respect',
+          ],
+          Motivation: [
+            'Helping others',
+            'Solving problems',
+            'Learning and growing',
+          ],
+          Feedback: [
+            'I am going to state my mind.',
+            'Like when I think you are wrong.',
+            'Sometimes I will be wrong.',
+            'Please tell me when you think I am wrong or misled.',
+            '`*but at the length truth will out*',
+          ],
+        },
+      }
+
+      ListBoy.RenderTo(blueprint, 'main');
+    </script>
+  </head>
+  <body>
+    <h1>McKay Salisbury's Blueprint</h1>
+    <div id='main'></div>
+    <h6>Made with <a onload="alert(this);" href='http://github.mckaysalisbury.com/ListBoy'>ListBoy</a></h6>
+  </body>
+</html>
