@@ -110,9 +110,6 @@ class ListBoy {
     }
 
     private static MarkdownTag(content: string, format: MarkdownFormatting) : HTMLElement | Text {
-        if (format === null) {
-            return document.createTextNode(content);
-        }
         let element = document.createElement(format);
         element.innerHTML = content;
         return element;
@@ -127,34 +124,46 @@ class ListBoy {
         if (item[0] === "`") {  // This is the indicator for markdown mode
             let pieces = item.substring(1).split("*");
             let format : MarkdownFormatting = null; // presume no formatting
+            let displayedFormat = format;
             let container = document.createElement("span");
             for (let piece of pieces) {
+                console.log(`before "${piece}", ${format}`)
                 if (piece !== "") {
-                    container.appendChild(this.MarkdownTag(piece, format))
+                    container.appendChild(this.MarkdownTag(piece, format));
+                    displayedFormat = format;
                 }
                 // adjust language state
-                if (format === null) { // One star always puts us into italics
+                if (format === null) { // First star always puts us into italics
                     format = MarkdownFormatting.Emphasis;
                 } else {
-                    if (piece === "") { // This means two stars
-                        // I'm not convinced this works with nested ** and *
+                    if (piece === "") { // This means two consecutive stars
+                        // This can't nest ** and *
                         if (format === MarkdownFormatting.Emphasis) {
-                            format = MarkdownFormatting.Strong
+                            // We need to know what we last printed
+                            if (displayedFormat === MarkdownFormatting.Strong) {
+                                format = null;
+                            } else {
+                                format = MarkdownFormatting.Strong;
+                            }
                         } else {
-                            format = MarkdownFormatting.Emphasis
+                            format = MarkdownFormatting.Emphasis;
                         }
                     } else {
-                        format = null;
+                        if (format === MarkdownFormatting.Emphasis) {
+                            format = null;
+                        } else {
+                            format = MarkdownFormatting.Emphasis;
+                        }
                     }
                 }
+                console.log(`after "${piece}", ${format}`)
             }
             return container;
         } else {
             let element = document.createElement("span");
             element.className = defaultClass;
 
-            element.appendChild(document.createTextNode(item));
-            // element.innerHTML = item;
+            element.innerHTML = item;
             return element
         }
     }

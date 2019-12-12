@@ -3,21 +3,25 @@
         <script src="ListBoy.js"></script>
         <script>
             let data = { a: "b", c: ["d", "e"], f: null };
-            ListBoy.RenderTo(data, "ListBoyPleasePutMyStuffHere")
+            ListBoy.RenderTo(data, "ListBoyPleasePutMyStuffHere");
 
             // This should work on any document ready state
             setTimeout(() => {
-                ListBoy.RenderTo(data, "lines")
+                ListBoy.RenderTo(data, "lines");
             }, 1);
 
+            const sample = "normal **strong** normal *italics* normal";
+            ListBoy.RenderTo(sample, "markdown-sample");
+            ListBoy.RenderTo("`" + sample, "markdown-rendered");
         </script>
         <style>
             .code {
                 font-family: monospace;
+                background-color: #fed;
             }
             textarea {
                 width: 100%;
-                height: 250px;
+                height: 20em;
             }
             #lines div {
                 border: 1px solid blue;
@@ -70,8 +74,7 @@
         <!-- #3 Mark where the content should go -->
         <div id="ListBoyPleasePutMyStuffHere"></div>
     </body>
-</html>
-        </textarea>
+</html></textarea>
         <p>Will look something like this:</p>
 
         <div id="ListBoyPleasePutMyStuffHere"></div>
@@ -111,7 +114,9 @@
                 <strong>Pseudo-markdown support.</strong> Beginning any string with a backquote
                 <span class="code">`</span>, tells ListBoy to ignore default CSS Classes, and enter
                 it's pseudo-markdown mode. Currently it only supports <span class="code">*em*</span>
-                and <span class="code">**strong**</span>, but I could add more.
+                and <span class="code">**strong**</span>, but I could add more.<br/>
+                "<span class="code">`<span id="markdown-sample"></span></span>" becomes
+                "<span id="markdown-rendered" class="code"></span>"
             </li>
         </ul>
         <h2>TODO</h2>

@@ -112,9 +112,6 @@ var ListBoy = /** @class */ (function () {
         }
     };
     ListBoy.MarkdownTag = function (content, format) {
-        if (format === null) {
-            return document.createTextNode(content);
-        }
         var element = document.createElement(format);
         element.innerHTML = content;
         return element;
@@ -129,38 +126,52 @@ var ListBoy = /** @class */ (function () {
         if (item[0] === "`") { // This is the indicator for markdown mode
             var pieces = item.substring(1).split("*");
             var format = null; // presume no formatting
+            var displayedFormat = format;
             var container = document.createElement("span");
             for (var _i = 0, pieces_1 = pieces; _i < pieces_1.length; _i++) {
                 var piece = pieces_1[_i];
+                console.log("before \"" + piece + "\", " + format);
                 if (piece !== "") {
                     container.appendChild(this.MarkdownTag(piece, format));
+                    displayedFormat = format;
                 }
                 // adjust language state
-                if (format === null) { // One star always puts us into italics
+                if (format === null) { // First star always puts us into italics
                     format = MarkdownFormatting.Emphasis;
                 }
                 else {
-                    if (piece === "") { // This means two stars
-                        // I'm not convinced this works with nested ** and *
+                    if (piece === "") { // This means two consecutive stars
+                        // This can't nest ** and *
                         if (format === MarkdownFormatting.Emphasis) {
-                            format = MarkdownFormatting.Strong;
+                            // We need to know what we last printed
+                            if (displayedFormat === MarkdownFormatting.Strong) {
+                                format = null;
+                            }
+                            else {
+                                format = MarkdownFormatting.Strong;
+                            }
                         }
                         else {
                             format = MarkdownFormatting.Emphasis;
                         }
                     }
                     else {
-                        format = null;
+                        if (format === MarkdownFormatting.Emphasis) {
+                            format = null;
+                        }
+                        else {
+                            format = MarkdownFormatting.Emphasis;
+                        }
                     }
                 }
+                console.log("after \"" + piece + "\", " + format);
             }
             return container;
         }
         else {
             var element = document.createElement("span");
             element.className = defaultClass;
-            element.appendChild(document.createTextNode(item));
-            // element.innerHTML = item;
+            element.innerHTML = item;
             return element;
         }
     };
