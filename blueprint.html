@@ -13,6 +13,10 @@
         text-align: center;
       }
 
+      #main > .dictionary > div > div > .complex-key-default {
+        font-size: larger;
+      }
+
       h6 {
         position: fixed;
         bottom: 0;
@@ -45,6 +49,9 @@
       a:link {
         color: #3c81f4
       }
+      a:visited {
+        color: #704130
+      }
 
       .complex-dictionary-entry {
         border: 1px dotted #3c81f4;
@@ -76,13 +83,58 @@
         content: ": ";
       }
 
-      #main > .dictionary > div > div > .complex-key-default {
-        font-size: larger;
+      /* special handler for cities */
+      .removeColon .array .simple-key-default::after {
+        content: "";
+      }
+      .removeColon .array .complex-dictionary-entry, .removeColon .array .simple-key-default {
+        display: none;
+      }
+      .removeColon .array .string-default {
+        font-size: small;
+      }
+      .removeColon .array .simple-dictionary-entry {
+        margin: 0px;
+      }
+      .removeColon .array .dictionary {
+        border: 0;
+        padding: 0;
       }
 
+      /* d3 */
+      path {
+        stroke: #fff;
+        fill: #3c81f4;
+        stroke-width: 0.5;
+      }
+
+      circle {
+        fill: #1c3b6f;
+        stroke: white;
+        stroke-width: 0.5px;
+      }
     </style>
     <script src='https://github.mckaysalisbury.com/ListBoy/ListBoy.js'></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="http://d3js.org/queue.v1.min.js"></script>
     <script>
+
+      cities = [
+        { name: 'Culver City, California (Los Angeles area)', lat: 34.02, long: -118.39 },
+        { name: 'Vienna, Virginia (Washington DC area)', lat: 38.90, long: -77.26 },
+        { name: 'Lindon, Utah', lat: 40.34, long: -111.72 },
+        { name: 'Orem, Utah', lat: 40.29, long: -111.69 },
+        { name: 'Portland, Oregon', lat: 45.50, long: -122.67 },
+        { name: 'Brigham Young University, Provo, Utah', lat: 40.25, long: -111.65 },
+        { name: 'Utah Valley University, Orem, Utah', lat: 40.28, long: -111.71 },
+        { name: 'Houston, Texas', lat: 29.76, long: -95.37 },
+        { name: 'Victoria, Texas', lat: 28.80, long: -97.00 },
+        { name: 'Galveston, Texas', lat: 29.30, long: -94.79 },
+        { name: 'Orem, Utah', lat: 40.29, long: -111.69 },
+        { name: 'Twin Falls, Idaho', lat: 42.55, long: -114.47 },
+        { name: 'West Jordan, Utah (Salt Lake City area)', lat: 40.60, long: -111.93 },
+      ]
 
       makeHorizontal = function makeHorizontal(target) {
         target.classList.add('horizontal');
@@ -90,20 +142,25 @@
       roundChildren = function roundChildren(target) {
         target.classList.add('enhanceChildren');
       }
+      removeColon = function removeColon(target) {
+        target.classList.add('removeColon');
+      }
       const blueprint = {
         action: makeHorizontal,
         another: roundChildren,
         'Who Am I?': {
-          'Where I have worked': [
+          'Where I have worked?': [
             'Dave',
             'Hulu',
             'FDIC',
             'TSYS',
           ],
-          'Where have I lived': [
-            '<iframe src="https://www.google.com/maps/embed?pb=!1m76!1m12!1m3!1d13248392.062890904!2d-106.8450095774024!3d35.83745965207871!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m61!3e2!4m5!1s0x87528ef8ed5eba6f%3A0x7229563bc344160!2sWest%20Jordan%2C%20UT!3m2!1d40.6096698!2d-111.9391031!4m5!1s0x54aca3a4c5b26eaf%3A0x24cb77ec2cf8c1aa!2sTwin%20Falls%2C%20Idaho!3m2!1d42.555838099999995!2d-114.4700518!4m5!1s0x874d7804e4b45119%3A0x642bc3cf90b21ed1!2sOrem%2C%20UT!3m2!1d40.2968979!2d-111.69464749999999!4m5!1s0x8640b8b4488d8501%3A0xca0d02def365053b!2sHouston%2C%20TX!3m2!1d29.7604267!2d-95.3698028!4m5!1s0x874d9b1eeeb9f5c5%3A0x63523d8413e98aa1!2sUtah%20Valley%20University%2C%20West%20University%20Parkway%2C%20Orem%2C%20UT!3m2!1d40.2787626!2d-111.71537389999999!4m5!1s0x874d90bc4aa0b68d%3A0xbf3eb3a3f30fdc4c!2sBrigham%20Young%20University%2C%20Provo%2C%20UT!3m2!1d40.2518435!2d-111.6493156!4m5!1s0x874d7804e4b45119%3A0x642bc3cf90b21ed1!2sOrem%2C%20UT!3m2!1d40.2968979!2d-111.69464749999999!4m5!1s0x874d84ff805c5c5d%3A0xbb675792ea6a1404!2sLindon%2C%20UT!3m2!1d40.343285699999996!2d-111.7207608!4m5!1s0x89b649671c566aef%3A0x2fc10cb0571036ba!2sVienna%2C%20VA!3m2!1d38.901222499999996!2d-77.2652604!4m5!1s0x80c2ba1edb77739d%3A0x3185e9d14beb59fe!2sCulver%20City%2C%20CA!3m2!1d34.021122399999996!2d-118.39646649999999!5e0!3m2!1sen!2sus!4v1576097333952!5m2!1sen!2sus" width="300" height="200" frameborder="0" style="border:0;" allowfullscreen=""></iframe>',
-            '<a href="https://goo.gl/maps/YDjaUF8GzgkX52Es8">(Google maps embed not working?)</a>',
-          ],
+          'Where have I lived?': {
+            '<svg width=400 height=200></svg>': cities,
+            action: getRenderer(cities),
+            another: removeColon,
+
+          },
           'My Devices': [
             {
               OS: 'Android',
@@ -142,13 +199,6 @@
               OS: 'Raspibian',
             },
           ],
-          "Languages I really like": [
-            "Relational Algebra",
-            "Typescript",
-            "Graphviz / DOT",
-            "Python",
-            "C#",
-          ]
         },
         'Hobbies': {
           'Video Games': [
@@ -178,12 +228,20 @@
             'Carcassonne',
             'Cosmic Encounters',
           ],
+          "Languages I really like": [
+            "Relational Algebra",
+            "Typescript",
+            "Graphviz / DOT",
+            "Python",
+            "C#",
+          ],
           'Other': [
             'Lego',
             '<a href="https://www.xkcd.com/426/">Geohashing</a>',
             'Math Puzzles',
             'Fun Holidays',
             '<a href="javascript:alert(\'coming soon?\');">t-shirts</a>',
+            'Cargo pants',
             '<a href="https://stackoverflow.com/users/8384/mckay"><img src="https://stackexchange.com/users/flair/5267.png"/></a>',
             '<a href="https://en.wikipedia.org/wiki/User:mckaysalisbury">Wikipedia</a>',
           ]
@@ -235,10 +293,44 @@
       }
 
       ListBoy.RenderTo(blueprint, 'main');
+
+      // D3 map
+      function mapRender(target, mapData, cities) {
+        var svg = d3.select("svg");
+        var node = svg.node();
+        var scale = Math.max(node.clientHeight, node.clientWidth)
+        var projection = d3.geo.albers()
+            .scale(scale)
+            .translate([node.clientWidth / 2, node.clientHeight / 2]);
+      
+        var path = d3.geo.path()
+        .projection(projection);
+      
+        svg.append('path')
+            .attr('class', 'states')
+            .datum(topojson.feature(mapData, mapData.objects.states))
+            .attr('d', path);
+
+        for (city of cities) {
+          var coords = projection([city.long, city.lat]);
+          svg.append('circle')
+            .attr('cx', coords[0])
+            .attr('cy', coords[1])
+            .attr('r', 5)
+        }
+      }
+    
+      function getRenderer(cities) {
+        return function renderer(target) {
+          d3.json('https://gist.githubusercontent.com/kosamari/5bcb6ab8ef292732463b/raw/fc74a4364f4f394952700be1d54d35334064d726/us.json', function (mapData) {
+            mapRender(target, mapData, cities)
+          });
+        }
+      }
     </script>
   </head>
   <body>
-    <h1>McKay Salisbury's Blueprint</h1>
+      <h1>McKay Salisbury's Blueprint</h1>
     <div id='main'></div>
     <h6>Made with <a onload="alert(this);" href='http://github.mckaysalisbury.com/ListBoy'>ListBoy</a></h6>
   </body>
