@@ -322,7 +322,7 @@
     
       function getRenderer(cities) {
         return function renderer(target) {
-          d3.json('https://gist.githubusercontent.com/kosamari/5bcb6ab8ef292732463b/raw/fc74a4364f4f394952700be1d54d35334064d726/us.json', function (mapData) {
+          d3.json('', function (mapData) { // removed because chrome doesn't like it.
             mapRender(target, mapData, cities)
           });
         }
