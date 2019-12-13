@@ -127,7 +127,6 @@ class ListBoy {
             let displayedFormat = format;
             let container = document.createElement("span");
             for (let piece of pieces) {
-                console.log(`before "${piece}", ${format}`)
                 if (piece !== "") {
                     container.appendChild(this.MarkdownTag(piece, format));
                     displayedFormat = format;
@@ -156,7 +155,6 @@ class ListBoy {
                         }
                     }
                 }
-                console.log(`after "${piece}", ${format}`)
             }
             return container;
         } else {
