@@ -205,7 +205,13 @@ var ListBoy = /** @class */ (function () {
         container.className = CSSClasses.Dictionary;
         for (var _i = 0, _a = Object.entries(data); _i < _a.length; _i++) {
             var _b = _a[_i], key = _b[0], value = _b[1];
-            if (typeof (value) === "function") {
+            if (key === this.classListAdd) {
+                container.classList.add(value);
+            }
+            else if (key === this.setId) {
+                container.id = value;
+            }
+            else if (typeof (value) === "function") {
                 value(container);
             }
             else {
@@ -237,6 +243,12 @@ var ListBoy = /** @class */ (function () {
         }
         return container;
     };
+    /**
+     * A variable (that is overridable in case you really need this text as a key) which is used to
+     * add the specified class to the object.
+     */
+    ListBoy.classListAdd = "target.classList.add";
+    ListBoy.setId = "target.id";
     return ListBoy;
 }());
 //# sourceMappingURL=ListBoy.js.map

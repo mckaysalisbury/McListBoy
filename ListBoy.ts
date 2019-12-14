@@ -53,6 +53,13 @@ enum MarkdownFormatting {
  */
 class ListBoy {
     /**
+     * A variable (that is overridable in case you really need this text as a key) which is used to
+     * add the specified class to the object.
+     */
+    static classListAdd = "target.classList.add";
+    static setId = "target.id";
+
+    /**
      * Renders the data object into the target DOM object (when it's ready to do so)
      * @param dataObject The data to render
      * @param targetId The ID of the DOM object to render it into
@@ -199,8 +206,11 @@ class ListBoy {
         container.className = CSSClasses.Dictionary;
 
         for(let [key, value] of Object.entries(data)) {
-
-            if (typeof(value) === "function") {
+            if (key === this.classListAdd) {
+                container.classList.add(value);
+            } else if (key === this.setId) {
+                container.id = value;
+            } else if (typeof(value) === "function") {
                 value(container);
             } else {
                 let itemContainer = document.createElement("div");

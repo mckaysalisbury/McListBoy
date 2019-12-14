@@ -87,50 +87,22 @@
         </style>
     </head>
     <script>
-
-
-        makeHorizontal = function(target) {
-            target.classList.add("horizontal");
-        };
-
-        clearClasses = function(target) {
-            // target.className = '';
-        }
-
-        language = function(item, cssClass) {
-            let node = document.createElement("span");
-            node.classList.add(cssClass);
-            node.appendChild(document.createTextNode(item));
-            return node;
-        }
-
-        descriptive = function(target) {
-            return language(target, "descriptive");
-        };
-        english = function(target) {
-            return language(target, "english");
-        };
-        tlhingan = function(target) {
-            return language(target, "tlhIngan");
-        };
-
-
         let data = {
-            action: makeHorizontal,
+            "target.classList.add": "horizontal",
             // Adverbs: { },
             Verbs: {
-                action: makeHorizontal,
+                "target.classList.add": "horizontal",
                 Prefix: {
                     "no object declarative": new POV(
-                        "jI-", "bI-", descriptive("none"), "ma-", "Su-", descriptive("none")),
+                        "jI-", "bI-", "`none", "ma-", "Su-", "`none"),
                     "no object imperative": new POV("", "yI-", "", "", "pe-", ""),
                     "object declarative": new POV(
                         new POV("", "qa-", "vI-", "", "Sa-", "vI-"),
                         new POV("cho-", "", "Da-", "ju-", "", "Da-"),
-                        new POV("mu-", "Du-", descriptive("none"), "nu-", "lI-", descriptive("none")),
+                        new POV("mu-", "Du-", "`none", "nu-", "lI-", "`none"),
                         new POV("", "pI-", "wI-", "", "re-", "DI-"),
                         new POV("tu-", "", "bo-", "che-", "", "bo-"),
-                        new POV("mu-", "nI-", "lu-", "nu-", "lI-", descriptive("none"))),
+                        new POV("mu-", "nI-", "lu-", "nu-", "lI-", "`none")),
                     "object imperative": new POV(
                         "",
                         new POV("HI-", "", "yI-", "gho-", "", "tI-"),
