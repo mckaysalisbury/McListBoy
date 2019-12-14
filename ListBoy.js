@@ -130,7 +130,6 @@ var ListBoy = /** @class */ (function () {
             var container = document.createElement("span");
             for (var _i = 0, pieces_1 = pieces; _i < pieces_1.length; _i++) {
                 var piece = pieces_1[_i];
-                console.log("before \"" + piece + "\", " + format);
                 if (piece !== "") {
                     container.appendChild(this.MarkdownTag(piece, format));
                     displayedFormat = format;
@@ -164,7 +163,6 @@ var ListBoy = /** @class */ (function () {
                         }
                     }
                 }
-                console.log("after \"" + piece + "\", " + format);
             }
             return container;
         }
