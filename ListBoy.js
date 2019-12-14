@@ -190,7 +190,12 @@ var ListBoy = /** @class */ (function () {
         container.className = CSSClasses.Array;
         for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
             var item = data_1[_i];
-            container.appendChild(this.CreateItem(item));
+            if (typeof (item) === "function") {
+                item(container);
+            }
+            else {
+                container.appendChild(this.CreateItem(item));
+            }
         }
         return container;
     };

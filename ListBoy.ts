@@ -183,7 +183,12 @@ class ListBoy {
         let container = document.createElement("div");
         container.className = CSSClasses.Array;
         for(let item of data) {
-            container.appendChild(this.CreateItem(item));
+            if (typeof(item) === "function") {
+                item(container);
+            }
+            else {
+                container.appendChild(this.CreateItem(item));
+            }
         }
         return container;
     }
