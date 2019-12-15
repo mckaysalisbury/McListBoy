@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <title>
+            Features Test
+        </title>
+        <script src="ListBoy.js"></script>
+        <script>
+            logIt = function logIt(target) {
+                 console.log(
+                     `This needs to be logged. Classes: ${target.classList}. id: ${target.id}`);
+            }
+            arrayFunc = {
+                "target.classList.add": "TotallyUsedClass",
+                "target.id": "listboyadded",
+                "alternateClassAdd": "manipulatedClassAddSetterKey",
+                array: [
+                    "Before Function ",
+                    logIt,
+                    " After Function"
+                ],
+                function: logIt,
+            };
+            ListBoy.RenderTo(arrayFunc, "arrayFunc");
+
+            /* Once that guy has finished, let's do this one */
+            window.setTimeout(function () {
+                // This allows the dev to set an alternate key in case they really need to say
+                // "target.classList.add" for whatever reason
+                // There's also a ListBoy.setId
+                ListBoy.classListAdd = "alternateClassAdd";
+                ListBoy.RenderTo(arrayFunc, "arrayFuncDup");
+            });
+        </script>
+    </head>
+    <body>
+        <p>
+            This document is just an area I use to test out a few features. Dig in to see how things
+            work.
+        </p>
+        <div id="arrayFunc"></div>
+        <div id="arrayFuncDup"></div>
+    </body>
+</html>
