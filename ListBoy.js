@@ -70,11 +70,16 @@ var ListBoy = /** @class */ (function () {
      * @param targetId The ID of the DOM object to render it into
      */
     ListBoy.ReadyToRenderTo = function (dataObject, targetId) {
-        var target = document.getElementById(targetId);
-        if (target === null) {
-            alert("ListBoy couldn't find your target: " + targetId);
+        try {
+            var target = document.getElementById(targetId);
+            if (target === null) {
+                throw new Error("ListBoy couldn't find your target: " + targetId);
+            }
+            target.appendChild(this.CreateItem(dataObject));
         }
-        target.appendChild(this.CreateItem(dataObject));
+        catch (ex) {
+            alert(ex);
+        }
     };
     /**
      * Builds a single item (not recommended for external use)
@@ -104,11 +109,11 @@ var ListBoy = /** @class */ (function () {
                 return item;
             }
             else {
-                alert("Don't know how to build an object with tag: " + item.tagName);
+                throw new Error("Don't know how to build an object with tag: " + item.tagName);
             }
         }
         else {
-            alert("Don't know how to build a " + typeof item);
+            throw new Error("Don't know how to build a " + typeof item);
         }
     };
     ListBoy.MarkdownTag = function (content, format) {

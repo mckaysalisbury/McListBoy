@@ -9,6 +9,9 @@ class POV implements IRenderSelf{
             // but the order is more native to me from language studies
             first_singular: any, second_singluar: any, third_singular: any,
             first_plural: any, second_plural: any, third_plural: any) {
+        if (third_plural === undefined) {
+            throw new Error("POV needs 6 parameters");
+        }
         this.data = [
             [first_singular, first_plural],
             [second_singluar, second_plural],

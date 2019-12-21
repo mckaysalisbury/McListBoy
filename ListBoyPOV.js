@@ -7,6 +7,9 @@ var POV = /** @class */ (function () {
     // Admittedly this looks transposed in code,
     // but the order is more native to me from language studies
     first_singular, second_singluar, third_singular, first_plural, second_plural, third_plural) {
+        if (third_plural === undefined) {
+            throw new Error("POV needs 6 parameters");
+        }
         this.data = [
             [first_singular, first_plural],
             [second_singluar, second_plural],

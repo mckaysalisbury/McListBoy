@@ -81,11 +81,15 @@ class ListBoy {
      * @param targetId The ID of the DOM object to render it into
      */
     static ReadyToRenderTo(dataObject: any, targetId: string) {
-        let target = document.getElementById(targetId);
-        if (target === null) {
-            alert("ListBoy couldn't find your target: " + targetId);
+        try {
+            let target = document.getElementById(targetId);
+            if (target === null) {
+                throw new Error("ListBoy couldn't find your target: " + targetId);
+            }
+            target.appendChild(this.CreateItem(dataObject));
+        } catch (ex) {
+            alert(ex);
         }
-        target.appendChild(this.CreateItem(dataObject));
     }
 
     /**
@@ -109,10 +113,10 @@ class ListBoy {
             } else if (item.tagName === "SPAN") {
                 return item;
             } else {
-                alert(`Don't know how to build an object with tag: ${item.tagName}`);
+                throw new Error(`Don't know how to build an object with tag: ${item.tagName}`);
             }
         } else {
-            alert(`Don't know how to build a ${typeof item}`);
+            throw new Error(`Don't know how to build a ${typeof item}`);
         }
     }
 
