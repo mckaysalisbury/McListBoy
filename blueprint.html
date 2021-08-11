@@ -146,6 +146,86 @@
             'actors': [
               'Kevin Bacon',
               'Levon Helm',
+            ],
+          },
+          'Fire Down Below': {
+            'media': 'movie',
+            'actors': [
+              'Levon Helm',
+              'Kane Hodder',
+            ],
+          },
+          'Steel Frontier': {
+            media: 'movie',
+            actors: [
+              "Robert O'Reilly",
+              'Kane Hodder'
+            ]
+          },
+          'Star Trek: Klingon': {
+            media: 'video game',
+            actors: [
+              'Marc Okrand',
+              "Robert O'Reilly"
+            ]
+          },
+          "{SuvwI' bo je} (The Warrior and the Feather)": {
+            media: 'play',
+            actors: [
+              'McKay Salisbury',
+              'Marc Okrand',
+              'Robyn Stewart',
+              'Mary Chieffo',
+            ]
+          },
+          'Star Trek: Discovery': {
+            media: 'television',
+            actors: [
+              'Mary Chieffo',
+              'Sonequa Martin-Green'
+            ],
+          },
+          'Holiday Rush': {
+            media: 'movie',
+            actors: [
+              'Sonequa Martin-Green',
+              'Romany Malco',
+            ]
+          },
+          'Baby Mama': {
+            media: 'movie',
+            actors: [
+              'Steve Martin',
+              'Romany Malco',
+            ]
+          },
+          'Planes, Trains and Automobiles': {
+            media: 'movie',
+            actors: [
+              'Kevin Bacon',
+              'Steve Martin',
+            ]
+          },
+          'Earthlings: Ugly Bags of Mostly Water': {
+            media: 'documentary',
+            actors: [
+              'Robyn Stewart',
+              'Michael Dorn',
+              'Marc Okrand',
+            ]
+          },
+          'Fist of the Warrior': {
+            media: 'movie',
+            actors: [
+              'Michael Dorn',
+              'Sherilyn Fenn',
+            ],
+          },
+          'Cavedweller': {
+            media: 'movie',
+            actors: [
+              'Kevin Bacon',
+              'Sherilyn Fenn'
             ]
           }
         },
@@ -156,23 +236,54 @@
           return instance;
         },
 
-        chainEntry(score, previous) {
+        chainEntry(name, score, movie, previous) {
           return {
+            name,
             score,
+            movie,
             previous,
             display() {
-              return `display ${previous?.score}`;
-            }
+              let message = `❖ ${name} (${score})`;
+              if (previous) {
+                message +=  ` was in ${movie} with ${previous.name}
+${previous.display()}`;
+              }
+              return message;
+            },
+            displayPrinted() {
+              return this.display().replaceAll("\n", "\\n").replaceAll("'", "\\'");
+            },
+
           };
         },
 
         chains() {
           if (!this.allowedMedia) {
-            console.error('Call Initialize with allowed media to create an eligible object');
+            console.error('Call `.initialize` with allowed media to create an eligible object');
           }
 
           if (!this.chainDictionary) {
-            this.chainDictionary = { 'Kevin Bacon': this.chainEntry(0) };
+            const kevin = this.chainEntry('Kevin Bacon', 0);
+            const actorsDataToProcess = [ kevin ];
+            let moviesToProcess = Object.entries(this.rawData).filter(([name, data]) => this.allowedMedia.includes(data.media));
+            this.chainDictionary = { 'Kevin Bacon': kevin };
+            while (actorDataToProcess = actorsDataToProcess.shift()) {
+              for (const [movieName, movieData] of moviesToProcess.slice()) { // shallow copy for iteration
+                // if the movie has this person in it
+                if (movieData.actors.includes(actorDataToProcess.name)) {
+                  // remove it from the list.
+                  moviesToProcess = moviesToProcess.filter(item => item[0] !== movieName);
+                  // if they're not in the dictionary, add them to it, and add them in the queue of people who need to be processed
+                  for (const actor of movieData.actors) {
+                    if (!(actor in this.chainDictionary)) {
+                      const entry = this.chainEntry(actor, actorDataToProcess.score + 1, movieName, actorDataToProcess);
+                      this.chainDictionary[actor] = entry;
+                      actorsDataToProcess.push(entry);
+                    }
+                  }
+                }
+              }
+            }
           }
 
           return this.chainDictionary;
@@ -180,56 +291,18 @@
 
         toListBoy() {
           const initialParameters = {
-            'linear fiction': ['play', 'movie'],
+            'linear fiction': ['play', 'movie', 'television'],
             'video games': ['play', 'movie', 'video game'],
-            'documentaries': ['play', 'movie', 'documentary'],
+            'documentaries': ['play', 'movie', 'television', 'documentary'],
           }
 
           return Object.fromEntries(Object.entries(initialParameters).map(([key, allowedMedia]) => {
             const baconAllowingMedia = this.initialize(allowedMedia);
-            const target = 'Kevin Bacon';
-            return [`Allowing ${key}`, `<a href="javascript:alert('${baconAllowingMedia.chains()[target].display()}')">${baconAllowingMedia.chains()[target].score}</a>`];
+            const target = 'McKay Salisbury';
+
+            return [`Allowing ${key}`, `<a href="javascript:alert('${baconAllowingMedia.chains()[target]?.displayPrinted() ?? 'No bacon number found'}')">${baconAllowingMedia.chains()[target]?.score ?? '∞'}</a>`];
           }));
         },
-      }
-
-
-
-      // const makeDict
-
-
-      const rawBaconData = {
-        'Video Games': {
-          'Kevin Bacon': '',
-          'Levon Helm' :'with Kevin Bacon in End of the Line',
-          'Kane Hodder': 'with Levon Helm in Fire Down Below',
-          "Robert O'Reilly": 'with Kane Hodder in Steel Frontier',
-          'Marc Okrand': "Robert O'Reilly (Chancellor Gowron) in Star Trek: Klingon",
-          'McKay Salisbury': "Marc Okrand Marc Okrand in {SuvwI' bo je} (The Warrior and the Feather)",
-        },
-        //         https://youtu.be/PVO0cyW9jDY
-
-        // ## Through Okrand (with Video Games)
-        // McKay (5) with Marc Okrand in {SuvwI' bo je} (The Warrior and the Feather)
-        // Marc Okrand (4) with Robert O'Reilly in Star Trek: Klingon
-        // Robert O'Reilly (3) with Kane Hodder in Steel Frontier
-        // Kane Hodder (2) with Levon Helm in Fire Down Below
-        // Levon Helm (1) with Kevin Bacon in End of the Line
-        // Kevin Bacon (0)
-
-        // ## Through Mary Chieffo
-        // McKay (5) with Mary Chieffo in {SuvwI' bo je} (The Warrior and the Feather)
-        // Mary Chieffo (4) with Sonequa Martin-Green in Star Trek: Discovery
-        // Sonequa Martin-Green (3) with Romany Malco in Holiday Rush
-        // Romany Malco (2) with Steve Martin in Baby Mama
-        // Steve Martin (1) with Kevin Bacon in Planes, Trains and Automobiles
-        // Kevin Bacon (0)
-
-        // ## Through Qov (with documentaries)
-        // McKay (4) with Robyn Stewart in {SuvwI' bo je} (The Warrior and the Feather)
-        // Robyn Stewart (3) with Michael Dorn in Earthlings: Ugly Bags of Mostly Water
-        // Michael Dorn (2) with Sherilyn Fenn in Fist of the Warrior
-        // Sherilyn Fenn (1) with Kevin Bacon in Cavedweller
       }
 
       function alerter(baconDictionary) {
