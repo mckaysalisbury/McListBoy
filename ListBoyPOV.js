@@ -16,7 +16,7 @@ var POV = /** @class */ (function () {
             [third_singular, third_plural],
         ];
     }
-    POV.prototype.Render = function () {
+    POV.prototype.Render = function (mappers) {
         var table = document.createElement("table");
         for (var _i = 0, _a = this.data; _i < _a.length; _i++) {
             var row = _a[_i];
@@ -26,7 +26,7 @@ var POV = /** @class */ (function () {
                 var column = row_1[_b];
                 var tableData = document.createElement("td");
                 tableRow.appendChild(tableData);
-                tableData.appendChild(ListBoy.CreateItem(column));
+                tableData.appendChild(ListBoy.CreateItem(column, mappers));
             }
         }
         return table;

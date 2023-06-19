@@ -19,7 +19,7 @@ class POV implements IRenderSelf{
         ]
     }
 
-    Render() : HTMLElement {
+    Render(mappers: Mappers) : HTMLElement {
         let table = document.createElement("table");
         for (const row of this.data) {
             let tableRow = document.createElement("tr");
@@ -27,7 +27,7 @@ class POV implements IRenderSelf{
             for (const column of row) {
                 let tableData = document.createElement("td");
                 tableRow.appendChild(tableData);
-                tableData.appendChild(ListBoy.CreateItem(column));
+                tableData.appendChild(ListBoy.CreateItem(column, mappers));
             }
         }
         return table;

@@ -1,8 +1,26 @@
-﻿function isIRenderSelf(item) {
+﻿var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+function isIRenderSelf(item) {
     return 'Render' in item; // I could also check if it's a function or something, maybe later.
 }
 function isString(data) {
     return data.constructor === String;
+}
+var identity = {
+    object: function (input) { return input; },
+    string: function (input) { return input; },
+};
+function normalize(mappers) {
+    return __assign(__assign({}, identity), mappers);
 }
 /** These are the CSS classes that ListBoy emits and recommends get styled by the caller */
 var CSSClasses;
@@ -47,19 +65,22 @@ var MarkdownFormatting;
 var ListBoy = /** @class */ (function () {
     function ListBoy() {
     }
+    // private static fixMappers(){}
     /**
      * Renders the data object into the target DOM object (when it's ready to do so)
      * @param dataObject The data to render
      * @param targetId The ID of the DOM object to render it into
+     * @param mappers mapping functions that will be called on appropriate objects in the tree (default is the identity function)
      */
-    ListBoy.RenderTo = function (dataObject, targetId) {
+    ListBoy.RenderTo = function (dataObject, targetId, mappers) {
         var _this = this;
+        var cleanMappers = normalize(mappers);
         if (document.readyState === "complete") {
-            this.ReadyToRenderTo(dataObject, targetId);
+            this.ReadyToRenderTo(dataObject, targetId, cleanMappers);
         }
         else {
             document.addEventListener("DOMContentLoaded", function (event) {
-                _this.ReadyToRenderTo(dataObject, targetId);
+                _this.ReadyToRenderTo(dataObject, targetId, cleanMappers);
             });
         }
     };
@@ -68,14 +89,15 @@ var ListBoy = /** @class */ (function () {
      * Precondition: The document is ready to get the document elements
      * @param dataObject The data to render
      * @param targetId The ID of the DOM object to render it into
+     * @param objectMapper A mapping function that will be called on all (JSON) objects in the tree
      */
-    ListBoy.ReadyToRenderTo = function (dataObject, targetId) {
+    ListBoy.ReadyToRenderTo = function (dataObject, targetId, mappers) {
         try {
             var target = document.getElementById(targetId);
             if (target === null) {
                 throw new Error("ListBoy couldn't find your target: " + targetId);
             }
-            target.appendChild(this.CreateItem(dataObject));
+            target.appendChild(this.CreateItem(dataObject, mappers));
         }
         catch (ex) {
             alert(ex);
@@ -84,26 +106,27 @@ var ListBoy = /** @class */ (function () {
     /**
      * Builds a single item (not recommended for external use)
      * @param item The item to build
+     * @param objectMapper A mapping function that will be called on all (JSON) objects in the tree (default is the identity function)
      */
-    ListBoy.CreateItem = function (item) {
+    ListBoy.CreateItem = function (item, mappers) {
         if (item === null) {
             return this.CreateNull();
         }
         else if (item.constructor == Object) { // JSON
-            return this.CreateData(item);
+            return this.CreateData(mappers.object(item), mappers);
         }
         else if (typeof (item) == "number") {
             return document.createTextNode(item.toString());
         }
         else if (typeof (item) == "string") {
-            return this.CreateText(item, CSSClasses.StringDefault);
+            return this.CreateText(mappers.string(item), CSSClasses.StringDefault);
         }
         else if (Array.isArray(item)) {
-            return this.CreateArray(item);
+            return this.CreateArray(item, mappers);
         }
         else if (typeof (item) === "object") {
             if (isIRenderSelf(item)) {
-                return item.Render();
+                return item.Render(mappers);
             }
             else if (item.tagName === "SPAN") {
                 return item;
@@ -190,7 +213,7 @@ var ListBoy = /** @class */ (function () {
      * Creates data from an array
      * @param data The array data
      */
-    ListBoy.CreateArray = function (data) {
+    ListBoy.CreateArray = function (data, mappers) {
         var container = document.createElement("div");
         container.className = CSSClasses.Array;
         for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
@@ -199,13 +222,13 @@ var ListBoy = /** @class */ (function () {
                 item(container);
             }
             else {
-                container.appendChild(this.CreateItem(item));
+                container.appendChild(this.CreateItem(item, mappers));
             }
         }
         return container;
     };
     /** Builds as if from a dictionary */
-    ListBoy.CreateData = function (data) {
+    ListBoy.CreateData = function (data, mappers) {
         var container = document.createElement("div");
         container.className = CSSClasses.Dictionary;
         for (var _i = 0, _a = Object.entries(data); _i < _a.length; _i++) {
@@ -225,13 +248,13 @@ var ListBoy = /** @class */ (function () {
                 if (value === null) {
                     itemContainer.classList.add(CSSClasses.NullDictionaryEntry);
                     itemContainer.appendChild(this.CreateText(key, CSSClasses.NullKeyDefault));
-                    itemContainer.appendChild(this.CreateItem(null));
+                    itemContainer.appendChild(this.CreateItem(null, mappers));
                 }
                 else if (isString(value)) {
                     itemContainer.className = CSSClasses.SimpleDictionaryEntry;
                     itemContainer.appendChild(this.CreateText(key, CSSClasses.SimpleKeyDefault));
                     itemContainer.appendChild(this.CreateText("", CSSClasses.SimpleSeparator));
-                    itemContainer.appendChild(this.CreateItem(value));
+                    itemContainer.appendChild(this.CreateItem(value, mappers));
                 }
                 else {
                     itemContainer.className = CSSClasses.ComplexDictionaryEntry;
@@ -241,7 +264,7 @@ var ListBoy = /** @class */ (function () {
                     itemContainer.appendChild(entryHeader);
                     var entryBody = document.createElement("div");
                     entryBody.className = CSSClasses.ComplexEntryBody;
-                    entryBody.appendChild(this.CreateItem(value));
+                    entryBody.appendChild(this.CreateItem(value, mappers));
                     itemContainer.appendChild(entryBody);
                 }
             }
