@@ -123,10 +123,10 @@
 
       const cities = [
         { name: 'Orem, Utah', lat: 40.31, long: -111.71 },
-        { name: 'Culver City, California (Los Angeles area)', lat: 34.02, long: -118.39 },
+        { name: 'Culver City, California (Los Angeles suburb)', lat: 34.02, long: -118.39 },
         { name: 'Los Angeles, California', lat: 34.03, long: -118.45 },
-        { name: 'Santa Monica, California (Los Angeles area)', lat: 34.01, long: -118.49 },
-        { name: 'Vienna, Virginia (Washington DC area)', lat: 38.90, long: -77.26 },
+        { name: 'Santa Monica, California (Los Angeles suburb)', lat: 34.01, long: -118.49 },
+        { name: 'Vienna, Virginia (Washington DC suburb)', lat: 38.90, long: -77.26 },
         { name: 'Lindon, Utah', lat: 40.34, long: -111.72 },
         { name: 'Orem, Utah', lat: 40.28, long: -111.68 },
         { name: 'Portland, Oregon', lat: 45.50, long: -122.67 },
@@ -137,7 +137,7 @@
         { name: 'Galveston, Texas', lat: 29.30, long: -94.79 },
         { name: 'Orem, Utah', lat: 40.29, long: -111.71 },
         { name: 'Twin Falls, Idaho', lat: 42.55, long: -114.47 },
-        { name: 'West Jordan, Utah (Salt Lake City area)', lat: 40.60, long: -111.93 },
+        { name: 'West Jordan, Utah (Salt Lake City suburb)', lat: 40.60, long: -111.93 },
       ]
 
       const bacon = {
@@ -321,7 +321,7 @@ ${previous.display()}`;
       const blueprint = {
         "target.classList.add": "enhanceChildren",
         'Who Am I?': {
-          'Where I have worked?': [
+          'Where I have worked recently?': [
             'Kiavi',
             'Dave',
             'Hulu',
@@ -336,8 +336,7 @@ ${previous.display()}`;
           'My Devices': [
             {
               OS: 'Android',
-              Model: '<a href="https://www.razer.com/mobile/razer-phone-2">Razer Phone 2</a>',
-              Manufacturer: 'Razer',
+              Model: 'Google Pixel 8 Pro',
             },
             {
               Model: 'Samsung Galaxy Watch 4',
@@ -349,6 +348,7 @@ ${previous.display()}`;
             },
             {
               OS: 'Mac OSX',
+              Usage: 'Development'
             },
             {
               OS: '<a href="https://truenas.com">TrueNAS</a>',
@@ -363,7 +363,7 @@ ${previous.display()}`;
               Model: 'PS5',
             },
             {
-              Model: 'Xbox One S'
+              Model: 'Xbox One Series X'
             },
             {
               Model: 'Nintendo Switch',
@@ -378,7 +378,7 @@ ${previous.display()}`;
           ],
           '<a href="https://en.wikipedia.org/wiki/Bacon_number">Bacon Number</a>': bacon.toListBoy(),
         },
-        'Hobbies': {
+        'Hobbies - Favorites': {
           'Video Games': [
             'StarCraft',
             'Portal',
@@ -386,13 +386,6 @@ ${previous.display()}`;
             'Mario',
             'Kingdom Hearts',
             'Minecraft',
-          ],
-          'Comic Books': [
-            'Squirrel Girl',
-            'Captain America',
-            'Batman',
-            'Nightcrawler',
-            'Phil Coulson',
           ],
           'Music': [
             'Jonathan Coulton',
@@ -403,13 +396,27 @@ ${previous.display()}`;
             'Depeche Mode',
             'John Williams',
           ],
+          'TV / Movies': [
+            'Star Trek',
+            'The Good Place',
+            'comic book',
+            'time travel',
+            'other science fiction'
+          ],
           'Tabletop Games': [
             'Dungeons & Dragons',
             'Dominion',
             'Carcassonne',
             'Cosmic Encounters',
           ],
-          "Languages I really like": [
+          'Comic Books': [
+            'Squirrel Girl',
+            'Captain America',
+            'Batman',
+            'Nightcrawler',
+            'Phil Coulson',
+          ],
+          "Programming Languages": [
             "Relational Algebra",
             "Datalog / Prolog / Rego",
             "TypeScript",
@@ -464,7 +471,7 @@ ${previous.display()}`;
                 Organization: {
                   Tools: [
                     'Trello',
-                    'Google Sheets',
+                    'Google sheets',
                   ],
                 },
                 Direct: [ 
